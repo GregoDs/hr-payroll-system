@@ -20,14 +20,27 @@ CREATE TABLE IF NOT EXISTS employees (
     national_id TEXT UNIQUE NOT NULL,
     kra_pin TEXT UNIQUE,
     role_title TEXT NOT NULL,
-    system_role TEXT NOT NULL DEFAULT 'Employee',
+    system_role TEXT NOT NULL DEFAULT 'Employee'
+    CHECK (
+        system_role IN ('Admin', 'HR', 'Manager', 'Employee')
+    ),
     team_id INTEGER NOT NULL,
     manager_id INTEGER,
-    employment_type TEXT NOT NULL,
+    employment_type TEXT NOT NULL
+    CHECK (
+        employment_type IN (
+            'Permanent',
+            'Contract',
+            'Intern'
+        )
+    ),
     salary REAL NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE,
-    is_active INTEGER NOT NULL DEFAULT 1,
+    is_active INTEGER NOT NULL DEFAULT 1
+    CHECK (
+        is_active IN (0,1)
+        ),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
@@ -41,11 +54,24 @@ CREATE TABLE IF NOT EXISTS employees (
 CREATE TABLE IF NOT EXISTS leave_requests (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     employee_id INTEGER NOT NULL,
-    leave_type TEXT NOT NULL,
+    leave_type TEXT NOT NULL CHECK (
+    leave_type IN (
+        'Annual',
+        'Sick',
+        'Maternity',
+        'Paternity',
+        'Compassionate',
+        'Study',
+        'Unpaid'
+        )
+    ),
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     reason TEXT,
-    status TEXT NOT NULL DEFAULT 'Pending',
+    status TEXT NOT NULL DEFAULT 'Pending'
+    CHECK (
+        status IN ('Pending','Approved','Rejected','Cancelled')
+    ),
     approved_by INTEGER,
     approved_at DATETIME,
     manager_comment TEXT,
@@ -70,10 +96,17 @@ CREATE TABLE IF NOT EXISTS payroll (
     unpaid_leave_deduction REAL NOT NULL DEFAULT 0,
     gross_pay REAL NOT NULL,
     tax_deduction REAL NOT NULL DEFAULT 0,
-    social_security_deductions REAL NOT NULL DEFAULT 0,
+    social_security_deduction REAL NOT NULL DEFAULT 0,
     other_deductions REAL NOT NULL DEFAULT 0,
     net_pay REAL NOT NULL,
-    status TEXT NOT NULL DEFAULT 'Draft',
+    status TEXT NOT NULL DEFAULT 'Draft'
+    CHECK (
+        status IN (
+            'Draft',
+            'Finalized',
+            'Paid'
+        )
+    ),
     generated_by INTEGER NOT NULL,
     generated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
