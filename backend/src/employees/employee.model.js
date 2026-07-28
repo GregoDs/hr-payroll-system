@@ -30,12 +30,13 @@ function getAllEmployees() {
     });
 }
 
+
+
+
 async function getEmployeeById(id) {
 
     const query = `
-
         SELECT
-
             e.id,
             e.employee_code,
             e.first_name,
@@ -66,29 +67,66 @@ async function getEmployeeById(id) {
     return new Promise((resolve, reject) => {
 
         db.get(query, [id], (err, row) => {
-
             if (err) {
-
                 return reject(err);
-
             }
-
             resolve(row);
-
         });
+    });
+}
 
+
+//Private helper
+function getEmployeeByField(field, value) {
+    
+    const query = `
+    SELECT *
+    FROM employees
+    WHERE ${field} = ?
+    LIMIT 1;
+    `;
+
+    return new Promise((resolve, reject) => {
+        db.get(query, [value], (err, row) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(row);
+        });
     });
 
 }
 
+function getEmployeeByEmployeeCode(employeeCode) {
+    return getEmployeeByField("employee_code", employeeCode);
+}
+
+function getEmployeeByEmail(email) {
+    return getEmployeeByField("email", email);
+}
+
+function getEmployeeByPhoneNumber(phoneNumber) {
+    return getEmployeeByField("phone_number", phoneNumber);
+}
+
+function getEmployeeByNationalId(nationalId) {
+    return getEmployeeByField("national_id", nationalId);
+}
+
+function getEmployeeByKraPin(kraPin) {
+    return getEmployeeByField("kra_pin", kraPin);
+}
 
 
+
+
+
+//create employee
 function createEmployee(employee) {
 
     const query = `
 
         INSERT INTO employees (
-
             employee_code,
             first_name,
             last_name,
@@ -106,7 +144,6 @@ function createEmployee(employee) {
             end_date,
             is_active
         )
-
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
     `;
@@ -135,17 +172,17 @@ function createEmployee(employee) {
     return new Promise((resolve, reject) => {
 
         db.run(query, values, function (err) {
-
             if (err) {
                 return reject(err);
             }
-            resolve({
-                id: this.lastID
-             });
+            resolve(this.lastID);
         });
     });
 
 }
+
+
+//update employee
 
 function updateEmployee(id, employee) {
 
@@ -214,6 +251,9 @@ function updateEmployee(id, employee) {
 
 }
 
+
+//update status...deactivate or activate
+
 function updateEmployeeStatus(id, is_active) {
 
     const query = `
@@ -246,9 +286,15 @@ function updateEmployeeStatus(id, is_active) {
 
 
 
+
 module.exports = {
     getAllEmployees,
     getEmployeeById,
+    getEmployeeByEmployeeCode,
+    getEmployeeByEmail,
+    getEmployeeByPhoneNumber,
+    getEmployeeByNationalId,
+    getEmployeeByKraPin,
     createEmployee,
     updateEmployee,
     updateEmployeeStatus,

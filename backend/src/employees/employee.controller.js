@@ -1,6 +1,6 @@
 const employeeService = require("./employee.service");
 
-async function getAllEmployees(req, res) {
+async function getAllEmployees(req, res, next) {
     try {
         const employees = await employeeService.getAllEmployees();
 
@@ -9,14 +9,15 @@ async function getAllEmployees(req, res) {
             data: employees,
         });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message,
-        });
+        // return res.status(500).json({
+        //     success: false,
+        //     message: error.message,
+        // });
+        next(error);
     }
 }
 
-async function getAllEmployeesById(req, res){
+async function getAllEmployeesById(req, res, next){
     try {
         const id = Number(req.params.id);
             if (Number.isNaN(id)) {
@@ -34,15 +35,11 @@ async function getAllEmployeesById(req, res){
         });
 
     } catch (error) {
-         return res.status(404).json({
-            success: false,
-            message: error.message,
-         })
-        
+         next(error);
     }
 }
 
-async function createEmployee(req, res) {
+async function createEmployee(req, res, next) {
 
     try {
         const employee = await employeeService.createEmployee(req.body);
@@ -54,16 +51,15 @@ async function createEmployee(req, res) {
         });
 
     } catch (error) {
-
-        return res.status(400).json({
-            success: false,
-            message: error.message
-         });
+        next(error);
     }
 }
 
-async function updateEmployee(req, res) {
 
+
+
+
+async function updateEmployee(req, res, next) {
     try {
         const id = Number(req.params.id);
 
@@ -73,9 +69,7 @@ async function updateEmployee(req, res) {
                 message: "Invalid employee ID.",
             });
         }
-
         const employee = await employeeService.updateEmployee(id, req.body);
-
         return res.status(200).json({
             success: true,
             message: "Employee updated successfully.",
@@ -83,15 +77,11 @@ async function updateEmployee(req, res) {
         });
 
     } catch (error) {
-
-        return res.status(400).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 }
 
-async function updateEmployeeStatus(req, res) {
+async function updateEmployeeStatus(req, res, next) {
 
     try {
         const id = Number(req.params.id);
@@ -112,11 +102,7 @@ async function updateEmployeeStatus(req, res) {
         });
 
     } catch (error) {
-
-        return res.status(400).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 }
 
