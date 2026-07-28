@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="PeopleOps HR and payroll operations dashboard">
+    <title>PeopleOps — Workforce operations</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <script type="module" src="./js/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Application navigation">
+        <div class="sidebar__top">
+          <a class="wordmark" href="#overview" aria-label="PeopleOps overview">
+            <span>people</span>
+            <strong>ops</strong>
+            <b>.</b>
+          </a>
+          <button
+            class="icon-button nav-toggle"
+            id="nav-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="primary-nav"
+            aria-label="Open navigation"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16"/>
+            </svg>
+          </button>
+        </div>
+
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary">
+          <a href="#overview" data-view-link="overview" aria-current="page">
+            <span>01</span>
+            Overview
+          </a>
+
+          <a href="#employees" data-view-link="employees">
+            <span>02</span>
+            Employees
+          </a>
+
+          <a href="#leave" data-view-link="leave">
+            <span>03</span>
+            Leave
+          </a>
+
+          <a href="#payroll" data-view-link="payroll">
+            <span>04</span>
+            Payroll
+          </a>
+
+          <a href="#reports" data-view-link="reports">
+            <span>05</span>
+            Reports
+          </a>
+        </nav>
+
+        <div class="sidebar__footer">
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            type="button"
+            aria-label="Switch to dark mode"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.64 5.64l1.42 1.42M16.94 16.94l1.42 1.42M18.36 5.64l-1.42 1.42M7.06 16.94l-1.42 1.42"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+            <span>Dark mode</span>
+          </button>
+          <p class="eyebrow">Signed in as</p>
+          <strong>Grace Mwangi</strong>
+          <span>HR Administrator</span>
+          <button class="text-button" type="button" data-demo-action="signout">Sign out →</button>
+        </div>
+      </aside>
+
+      <main id="main-content">
+        <div class="demo-banner" role="status">
+          <span class="status-dot"></span>
+          Demo workspace · Changes stay in this browser session
+        </div>
+        <div id="app-status" class="sr-only" aria-live="polite"></div>
+        <div id="views-root" data-page-root></div>
+      </main>
+    </div>
+
+    <div class="modal-layer" id="modal-layer" hidden>
+      <div class="modal-backdrop" data-close-modal></div>
+
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <header class="modal__header">
+          <div>
+            <p class="eyebrow" id="modal-eyebrow">People operations</p>
+            <h2 id="modal-title">Details</h2>
+          </div>
+
+          <button
+            class="icon-button"
+            type="button"
+            data-close-modal
+            aria-label="Close dialog"
+          >
+            ×
+          </button>
+        </header>
+
+        <div class="modal__body" id="modal-body"></div>
+      </section>
+    </div>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>

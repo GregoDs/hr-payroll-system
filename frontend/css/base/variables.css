@@ -1,0 +1,48 @@
+:root {
+  --ink: #171817;
+  --surface-1: #ebeae4;
+  --surface-2: #f1f0ea;
+  --surface-3: #f8f7f2;
+  --surface-input: #f4f3ed;
+  --paper: #1b1c1b;
+  --text-secondary: #565851;
+  --muted: #74766e;
+  --muted-dark: #96988f;
+  --border: #d4d3cc;
+  --border-strong: #bbbcb4;
+  --acid: #c9e847;
+  --acid-hover: #b8d63a;
+  --success: #18783b;
+  --warning: #a76700;
+  --danger: #c43a34;
+  --red: #d8322b;
+  --white: #fffefa;
+  --sidebar-width: 230px;
+  color-scheme: light;
+  font-family: "Spotify Mix", "Circular Spotify Text", "DM Sans", Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-theme="dark"] {
+  --ink: #090909;
+  --surface-1: #0d0d0d;
+  --surface-2: #0e0e0e;
+  --surface-3: #111111;
+  --surface-input: #151515;
+  --paper: #f5f4ef;
+  --text-secondary: #aaa9a3;
+  --muted: #777773;
+  --muted-dark: #5e5e59;
+  --border: #292926;
+  --border-strong: #363633;
+  --acid: #e9ff70;
+  --acid-hover: #d8ef5f;
+  --success: #57ed78;
+  --warning: #ffc65c;
+  --danger: #ff7169;
+  --red: #ff4138;
+  --white: #f5f4ef;
+  color-scheme: dark;
+}

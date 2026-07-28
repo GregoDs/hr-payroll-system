@@ -1,0 +1,88 @@
+<section class="view is-active" id="overview" data-view="overview" aria-labelledby="overview-title">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow accent-text">Live people operations</p>
+      <h1 id="overview-title">
+        Workforce<br>overview
+      </h1>
+      <p class="page-intro">
+        Leave decisions, team coverage and monthly payroll in one operational view.
+      </p>
+    </div>
+
+    <div class="live-state">
+      <span class="status-dot status-dot--pulse"></span>
+      <span>Updated now</span>
+    </div>
+  </header>
+
+  <div class="kpi-grid" id="kpi-grid" aria-label="Workforce metrics"></div>
+
+  <section class="section-block" aria-labelledby="approval-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Decision queue</p>
+        <h2 id="approval-title">Pending leave approvals</h2>
+      </div>
+
+      <span class="microcopy">Updated automatically</span>
+    </div>
+
+    <div class="feedback" id="leave-feedback" aria-live="polite" hidden></div>
+
+    <div class="approval-list" id="approval-list" aria-busy="true">
+      <div class="loading-state">
+        <span></span>
+        Loading requests
+      </div>
+    </div>
+  </section>
+
+  <div class="split-grid">
+    <section class="section-block" aria-labelledby="out-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Team calendar</p>
+          <h2 id="out-title">Who is out</h2>
+        </div>
+
+        <label class="compact-field">
+          <span>Week</span>
+          <input id="leave-week" type="week" value="2026-W31">
+        </label>
+      </div>
+
+      <div id="out-list"></div>
+    </section>
+
+    <section class="section-block" aria-labelledby="balance-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">2026 allowance</p>
+          <h2 id="balance-title">Leave balances</h2>
+        </div>
+
+        <button class="text-button" type="button" data-go-view="leave">
+          View all →
+        </button>
+      </div>
+
+      <div id="balance-list"></div>
+    </section>
+  </div>
+
+  <section class="section-block" aria-labelledby="payroll-preview-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">July 2026</p>
+        <h2 id="payroll-preview-title">Payroll position</h2>
+      </div>
+
+      <button class="button button--primary" type="button" data-go-view="payroll">
+        Open payroll
+      </button>
+    </div>
+
+    <div class="payroll-summary" id="payroll-preview"></div>
+  </section>
+</section>

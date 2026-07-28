@@ -1,0 +1,11 @@
+.rule-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  margin-bottom: 20px;
+  padding: 1px;
+  background: var(--border);
+}
+.rule-item { padding: 13px 15px; background: var(--surface-3); }
+.rule-item strong { display: block; font-size: .56rem; }
+.rule-item span { display: block; margin-top: 4px; color: var(--muted); font-size: .53rem; }

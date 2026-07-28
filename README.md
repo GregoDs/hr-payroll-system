@@ -1,65 +1,126 @@
-# HR & Payroll Management System
+# PeopleOps HR & Payroll
 
 Software Engineering Practical Test submission for Vunoh Global Services.
 
-## Tech Stack
+The repository contains an Express/SQLite backend and a framework-free frontend built with semantic HTML, plain CSS and vanilla JavaScript. The frontend currently runs against an isolated in-memory dummy-data adapter so it can be reviewed before backend integration.
 
-- Backend: Express.js
-- Frontend: HTML, CSS, Vanilla JavaScript
-- Database: SQLite
+## What was prioritized
 
-## Planned Features
+The current frontend prioritizes the operational paths that carry the most risk:
 
-- Employee Records
-- Leave Management
-- Payroll Processing
+- Employee records, search, filtering, editing, reporting structure and reversible deactivation
+- Leave submission and manager decisions with visible coverage, notice, overlap and balance checks
+- Leave balances, weekly absence visibility and aging/escalation indicators
+- Monthly payroll generation, mid-month proration, unpaid-leave adjustments, progressive tax, social security and payslip review
+- Keyboard navigation, focus-managed dialogs, reduced-motion support and responsive layouts
+- A low-glare warm light theme by default, with a restrained dark theme remembered per browser
 
-Development is being completed incrementally with meaningful commits across the project timeline.
+Mock changes intentionally last only for the current page session. Refreshing restores the fixture in `frontend/data/dummy-data.js`.
 
-Just made the project structure as start to the project.
+## Frontend structure
 
-Future improvement: payroll adjustment workflow for correcting underpayments and overpayments.
+The frontend is still a vanilla JavaScript single-page app, but the files are now separated by responsibility:
 
+- `frontend/index.html` is the application shell: sidebar, modal layer, toast region and the page outlet.
+- `frontend/pages/*.html` contains the readable page markup for dashboard, employees, leave, payroll and reports.
+- `frontend/css/main.css` only imports the real CSS files from `base`, `components` and `pages`.
+- `frontend/js/pages/*.js` is the page registry that tells the app which HTML partials to load.
+- `frontend/js/app.js` owns shared state, rendering, forms and interactions while the backend is still deferred.
 
-##Business rules for leave 
+## Run the frontend
 
-✔ No overlapping leave
+No dependency installation or build step is required. From the repository root, start any static file server. This is required because the app loads page partials from `frontend/pages/*.html`.
 
-✔ Cannot approve own leave
+```bash
+python3 -m http.server 5500 --directory frontend
+```
 
-✔ Cannot request leave in the past
+Then open:
 
-✔ End date >= Start date
+```text
+http://localhost:5500
+```
 
-✔ Only pending requests can be approved
+Alternatively, use a VS Code Live Server extension and serve the `frontend` directory. Do not open the HTML through `file://`; browsers commonly block the JavaScript module and partial-loading requests from local files.
 
-✔ Team coverage limit
+## Run the frontend tests
 
-✔ Minimum notice period
+Node.js 18 or newer is required:
 
-✔ Unpaid leave reduces salary
+```bash
+cd frontend
+npm test
+```
 
+The tests use Node's built-in test runner and require no downloaded packages.
 
-## Payroll assumptions
+## Backend
 
-- Payroll is generated once per employee per month using `pay_period` in `YYYY-MM` format.
-- Payroll lifecycle is `Draft -> Finalized -> Paid`.
-- Generated payroll starts as `Draft` so HR/Finance can review calculations before employees see payslips.
-- Draft payroll is visible through internal payroll review endpoints, but payslips are only available after payroll is `Finalized` or `Paid`.
-- Employee payroll history only returns `Finalized` and `Paid` records.
-- Payroll can only be finalized from `Draft`; already finalized or paid records cannot be finalized again.
-- Payroll generation includes only active employees whose start date is on or before the last day of the pay period.
-- Payroll records are stored as history snapshots. They should not be deleted because employee salary, leave, or active status may change later.
-- Monthly salary is prorated for mid-month joiners using a fixed 30-day payroll month.
-- Only approved leave requests with `leave_type = 'Unpaid'` reduce payroll.
-- Unpaid leave deduction is calculated as `monthly salary / 30 * approved unpaid leave days overlapping the pay period`.
-- Gross pay is prorated salary minus unpaid leave deduction.
-- Tax is calculated using simple brackets on gross pay:
-  - 0% on the first 24,000
-  - 10% on income above 24,000 up to 50,000
-  - 20% on income above 50,000 up to 100,000
-  - 30% on income above 100,000
-- Social security is calculated as 5% of gross pay, capped at 6,000.
-- Other deductions default to 0 in the current implementation.
-- Net pay is `gross pay - tax - social security - other deductions`.
-- Until authentication is connected to payroll generation, records generated through `POST /api/payroll/generate` use employee ID `1` as the system generator fallback.
+The existing backend is not required for the current mock-first frontend. To run it separately:
+
+```bash
+cd backend
+npm install
+node src/server.js
+```
+
+Its API base is `http://localhost:3000/api`, with employee, leave and payroll routes. Connecting the frontend adapter to those routes is intentionally deferred.
+
+## Leave safeguards and thresholds
+
+The mock workflow applies client-side operational checks:
+
+- Annual allowance: 21 calendar days
+- Standard minimum notice: 7 calendar days
+- Maternity and paternity notice: 14 calendar days
+- Sick and compassionate leave notice: 0 days
+- Team coverage: at most one approved colleague from a team away during the same dates
+- Pending escalation: requests waiting 3 or more days are marked for escalation
+- Active pending/approved requests cannot overlap for the same employee
+- Only pending requests can be approved or rejected
+- Inactive employees cannot have leave approved
+- Annual requests cannot exceed remaining balance
+- End date must be on or after start date
+
+Frontend checks provide early feedback only. The backend must remain authoritative once integration is enabled.
+
+## Payroll formula and assumptions
+
+Currency is KES and values are formatted with `Intl.NumberFormat("en-KE")`.
+
+1. Monthly payroll uses a fixed 30-day denominator.
+2. `daily rate = monthly basic salary / 30`
+3. Mid-month joiner pay is the daily rate multiplied by eligible calendar days, capped at 30.
+4. Only approved unpaid leave overlapping the selected pay period is deducted.
+5. `gross pay = prorated salary - unpaid leave deduction`, never below zero.
+6. Tax is progressive:
+   - 0% on the first KSh 24,000
+   - 10% above KSh 24,000 through KSh 50,000
+   - 20% above KSh 50,000 through KSh 100,000
+   - 30% above KSh 100,000
+7. Social security is 5% of gross pay, capped at KSh 6,000.
+8. `net pay = gross pay - tax - social security - other deductions`, never below zero.
+9. Other deductions currently default to zero.
+10. Duplicate payroll generation for the same month is blocked.
+11. Historical payroll remains visible even if an employee later becomes inactive.
+
+Automated cases cover zero tax, exact tax-bracket boundaries, the social-security cap, mid-month joining and approved unpaid leave.
+
+## Known limitations
+
+- Data is in-memory and resets on refresh.
+- Authentication and role permissions are represented visually but not enforced.
+- Calendar-day leave calculations do not yet exclude weekends or public holidays.
+- Leave allowances are currently a single annual default rather than per-type accrual records.
+- Team coverage uses a fixed threshold instead of configurable team staffing requirements.
+- Payroll records can be generated and reviewed in mock mode, but the complete draft/finalized/paid transition controls are not yet exposed.
+- The Google Fonts import requires a network connection; the system font fallbacks remain usable offline.
+
+## With more time
+
+- Connect the isolated store interface to the existing Express endpoints and make server rules authoritative
+- Add persisted leave-balance and team configuration tables
+- Add public-holiday-aware working-day calculations
+- Add authentication, role permissions and audit history
+- Add payroll adjustments for underpayments and overpayments
+- Add end-to-end browser tests for keyboard, mobile and decision workflows

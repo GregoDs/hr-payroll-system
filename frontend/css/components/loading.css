@@ -1,0 +1,22 @@
+.empty-state,
+.loading-state,
+.error-state {
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 35px 20px;
+  color: var(--muted);
+  text-align: center;
+  font-size: .66rem;
+}
+.loading-state span {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--success);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(1turn); } }

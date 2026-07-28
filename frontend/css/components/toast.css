@@ -1,0 +1,11 @@
+.toast-region { position: fixed; right: 16px; bottom: 16px; z-index: 80; display: grid; gap: 8px; }
+.toast {
+  width: min(340px, calc(100vw - 32px));
+  padding: 14px 16px;
+  color: var(--paper);
+  background: var(--surface-1);
+  border: 1px solid var(--border-strong);
+  font-size: .62rem;
+  animation: toast-in .2s ease-out;
+}
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } }

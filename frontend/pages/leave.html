@@ -1,0 +1,58 @@
+<section class="view" id="leave" data-view="leave" aria-labelledby="leave-title" hidden>
+  <header class="page-header page-header--compact">
+    <div>
+      <p class="eyebrow accent-text">Time away</p>
+      <h1 id="leave-title">Leave desk</h1>
+      <p class="page-intro">
+        Submit requests, protect team coverage and resolve aging approvals.
+      </p>
+    </div>
+
+    <button class="button button--primary" id="request-leave" type="button">
+      Request leave
+    </button>
+  </header>
+
+  <div class="rule-strip" id="leave-rules-strip"></div>
+
+  <div class="toolbar">
+    <label class="field">
+      <span>Request status</span>
+      <select id="leave-status-filter">
+        <option value="all">All requests</option>
+        <option>Pending</option>
+        <option>Approved</option>
+        <option>Rejected</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Leave type</span>
+      <select id="leave-type-filter">
+        <option value="all">All types</option>
+        <option>Annual</option>
+        <option>Sick</option>
+        <option>Study</option>
+        <option>Unpaid</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th>Type</th>
+          <th>Dates</th>
+          <th>Days</th>
+          <th>Coverage</th>
+          <th>Submitted</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody id="leave-table"></tbody>
+    </table>
+  </div>
+</section>

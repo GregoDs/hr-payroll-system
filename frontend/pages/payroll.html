@@ -1,0 +1,55 @@
+<section class="view" id="payroll" data-view="payroll" aria-labelledby="payroll-title" hidden>
+  <header class="page-header page-header--compact">
+    <div>
+      <p class="eyebrow accent-text">Monthly run</p>
+      <h1 id="payroll-title">Payroll control</h1>
+      <p class="page-intro">
+        Review proration, statutory deductions and net pay before finalization.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <label class="compact-field">
+        <span>Pay period</span>
+        <input id="pay-period" type="month" value="2026-07">
+      </label>
+
+      <button class="button button--primary" id="generate-payroll" type="button">
+        Generate payroll
+      </button>
+    </div>
+  </header>
+
+  <div class="feedback" id="payroll-feedback" aria-live="polite" hidden></div>
+  <div class="payroll-summary" id="payroll-summary"></div>
+
+  <div class="section-heading ledger-heading">
+    <div>
+      <p class="eyebrow">Calculation ledger</p>
+      <h2>Payslips</h2>
+    </div>
+
+    <span class="microcopy">Amounts in KES</span>
+  </div>
+
+  <div class="table-shell table-shell--wide">
+    <table>
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th>Base salary</th>
+          <th>Proration</th>
+          <th>Unpaid leave</th>
+          <th>Gross pay</th>
+          <th>Tax</th>
+          <th>Social security</th>
+          <th>Net pay</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody id="payroll-table"></tbody>
+    </table>
+  </div>
+</section>

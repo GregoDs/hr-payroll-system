@@ -1,0 +1,75 @@
+<section class="view" id="employees" data-view="employees" aria-labelledby="employees-title" hidden>
+  <header class="page-header page-header--compact">
+    <div>
+      <p class="eyebrow accent-text">Employee directory</p>
+      <h1 id="employees-title">People records</h1>
+      <p class="page-intro">
+        Maintain employment details and reporting relationships without deleting history.
+      </p>
+    </div>
+
+    <button class="button button--primary" id="add-employee" type="button">
+      Add employee
+    </button>
+  </header>
+
+  <div class="toolbar" aria-label="Employee filters">
+    <label class="field field--search">
+      <span>Search people</span>
+      <input id="employee-search" type="search" placeholder="Name, role, team or manager">
+    </label>
+
+    <label class="field">
+      <span>Employment type</span>
+      <select id="employment-filter">
+        <option value="all">All types</option>
+        <option>Permanent</option>
+        <option>Contract</option>
+        <option>Intern</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Status</span>
+      <select id="status-filter">
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+        <option value="all">All records</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="feedback" id="employee-feedback" aria-live="polite" hidden></div>
+
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th>Role &amp; team</th>
+          <th>Manager</th>
+          <th>Started</th>
+          <th>Type</th>
+          <th>Salary</th>
+          <th>Status</th>
+          <th>
+            <span class="sr-only">Actions</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody id="employee-table"></tbody>
+    </table>
+  </div>
+
+  <section class="section-block org-section" aria-labelledby="org-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Reporting structure</p>
+        <h2 id="org-title">Organization view</h2>
+      </div>
+    </div>
+
+    <div class="org-tree" id="org-tree"></div>
+  </section>
+</section>
