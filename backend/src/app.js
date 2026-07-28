@@ -1,5 +1,6 @@
 const express = require("express");
 const employeeRoutes = require("./employees/employee.routes");
+const leaveRoutes = require("./leave-requests/leave.routes");
 const logger = require("./middleware/logger.middleware");
 const errorHandler = require("./middleware/error.middleware");
 
@@ -12,6 +13,7 @@ app.get("/", (req,res) => {
 });
 
 app.use("/api/employees", employeeRoutes);
+app.use("/api/leaves", leaveRoutes);
 // POST   /employees           -> Create employee
 // PUT    /employees/:id       -> Update employee
 // PATCH  /employees/:id/status -> Activate/Deactivate employee

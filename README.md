@@ -19,3 +19,22 @@ Development is being completed incrementally with meaningful commits across the 
 Just made the project structure as start to the project.
 
 Future improvement: payroll adjustment workflow for correcting underpayments and overpayments.
+
+
+##Business rules for leave 
+
+✔ No overlapping leave
+
+✔ Cannot approve own leave
+
+✔ Cannot request leave in the past
+
+✔ End date >= Start date
+
+✔ Only pending requests can be approved
+
+✔ Team coverage limit
+
+✔ Minimum notice period
+
+✔ Unpaid leave reduces salary

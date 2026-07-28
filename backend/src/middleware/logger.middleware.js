@@ -6,10 +6,12 @@ function logger(req, res, next) {
     console.log(`[${new Date().toISOString()}]`);
     console.log(`${req.method} ${req.originalUrl}`);
 
-    if (Object.keys(req.body).length > 0) {
-        console.log("Request Body:");
-        console.log(req.body);
-    }
+    const requestBody = req.body ?? {};
+
+        if (Object.keys(requestBody).length > 0) {
+            console.log("Request Body:");
+            console.log(requestBody);
+        }
 
     //Interceptor where res will actually see response returned
     const originalJson = res.json;

@@ -6,6 +6,7 @@ function errorHandler(error, req, res, next) {
 
     return res.status(statusCode).json({
         success: false,
+        statusCode,
         message: statusCode === 500
             ? "Internal server error."
             : error.message
