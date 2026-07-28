@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS payroll (
             'Paid'
         )
     ),
-    generated_by INTEGER NOT NULL,
+    generated_by INTEGER,
     generated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,

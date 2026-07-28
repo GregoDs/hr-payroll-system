@@ -17,7 +17,7 @@ INSERT INTO teams (id,name,description) VALUES
 INSERT INTO employees
 (id,employee_code,first_name,last_name,email,phone_number,national_id,kra_pin,role_title,system_role,team_id,manager_id,employment_type,salary,start_date,end_date,is_active)
 VALUES
-(1,'EMP-2026-001','Grace','Mwangi','grace@company.com','0711000001','31000001','A123450001X','HR Director','Admin',2,NULL,'Permanent',250000,'2023-01-02',NULL,1),
+(1,'EMP-2026-001','Grace','Mwangi','grace@company.com','0711000001','31000001','A123450001X','HR Manager','Admin',2,NULL,'Permanent',250000,'2023-01-02',NULL,1),
 (2,'EMP-2026-002','David','Otieno','david@company.com','0711000002','31000002','A123450002X','Engineering Manager','Manager',1,1,'Permanent',180000,'2023-02-10',NULL,1),
 (3,'EMP-2026-003','Mercy','Njeri','mercy@company.com','0711000003','31000003','A123450003X','Finance Manager','Manager',3,1,'Permanent',170000,'2023-03-01',NULL,1),
 (4,'EMP-2026-004','Kevin','Kariuki','kevin@company.com','0711000004','31000004','A123450004X','Sales Manager','Manager',4,1,'Permanent',165000,'2023-03-15',NULL,1),

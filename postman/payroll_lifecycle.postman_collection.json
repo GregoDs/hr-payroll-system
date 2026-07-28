@@ -1,0 +1,717 @@
+{
+  "info": {
+    "name": "HR Payroll System - Payroll Lifecycle Tests",
+    "_postman_id": "f54c79d6-8f44-4a4a-9f8a-d1a6f9c5d301",
+    "description": "Tests payroll generation, Draft review, Draft payslip blocking, finalization, employee-visible payslips, duplicate prevention, validation, unpaid leave deductions, mid-month joiners, and tax boundary salaries.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "payPeriod", "value": "2026-10" },
+    { "key": "managerId", "value": "3" },
+    { "key": "unpaidEmployeeId", "value": "9" },
+    { "key": "unpaidLeaveId", "value": "" },
+    { "key": "unpaidPayrollId", "value": "" },
+    { "key": "draftPayrollId", "value": "" },
+    { "key": "midMonthPayrollId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "00 - Health Check",
+      "item": [
+        {
+          "name": "API is running",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('API returns 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 - Setup Edge Case Data",
+      "description": "Creates employees and approved unpaid leave needed for payroll edge-case testing. Re-running may return 409 for employees/leaves that already exist.",
+      "item": [
+        {
+          "name": "Create tax boundary employee - 24000",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_code\": \"PAY-LIFE-24000\",\n  \"first_name\": \"Tax\",\n  \"last_name\": \"Boundary24000\",\n  \"email\": \"pay.life.24000@company.com\",\n  \"phone_number\": \"0799102400\",\n  \"national_id\": \"99102400\",\n  \"kra_pin\": \"PLIFE24000\",\n  \"role_title\": \"Payroll Tester\",\n  \"system_role\": \"Employee\",\n  \"team_id\": 3,\n  \"manager_id\": 3,\n  \"employment_type\": \"Permanent\",\n  \"salary\": 24000,\n  \"start_date\": \"2026-01-01\",\n  \"end_date\": null,\n  \"is_active\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/employees"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Employee created or already exists', function () {",
+                  "    pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create tax boundary employee - 50000",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_code\": \"PAY-LIFE-50000\",\n  \"first_name\": \"Tax\",\n  \"last_name\": \"Boundary50000\",\n  \"email\": \"pay.life.50000@company.com\",\n  \"phone_number\": \"0799105000\",\n  \"national_id\": \"99105000\",\n  \"kra_pin\": \"PLIFE50000\",\n  \"role_title\": \"Payroll Tester\",\n  \"system_role\": \"Employee\",\n  \"team_id\": 3,\n  \"manager_id\": 3,\n  \"employment_type\": \"Permanent\",\n  \"salary\": 50000,\n  \"start_date\": \"2026-01-01\",\n  \"end_date\": null,\n  \"is_active\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/employees"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Employee created or already exists', function () {",
+                  "    pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create tax boundary employee - 100000",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_code\": \"PAY-LIFE-100000\",\n  \"first_name\": \"Tax\",\n  \"last_name\": \"Boundary100000\",\n  \"email\": \"pay.life.100000@company.com\",\n  \"phone_number\": \"0799110000\",\n  \"national_id\": \"99110000\",\n  \"kra_pin\": \"PLIFE100000\",\n  \"role_title\": \"Payroll Tester\",\n  \"system_role\": \"Employee\",\n  \"team_id\": 3,\n  \"manager_id\": 3,\n  \"employment_type\": \"Permanent\",\n  \"salary\": 100000,\n  \"start_date\": \"2026-01-01\",\n  \"end_date\": null,\n  \"is_active\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/employees"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Employee created or already exists', function () {",
+                  "    pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create mid-month joiner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_code\": \"PAY-LIFE-MIDMONTH\",\n  \"first_name\": \"Payroll\",\n  \"last_name\": \"Midmonth\",\n  \"email\": \"pay.life.midmonth@company.com\",\n  \"phone_number\": \"0799111015\",\n  \"national_id\": \"99111015\",\n  \"kra_pin\": \"PLIFEMID01\",\n  \"role_title\": \"Payroll Tester\",\n  \"system_role\": \"Employee\",\n  \"team_id\": 3,\n  \"manager_id\": 3,\n  \"employment_type\": \"Permanent\",\n  \"salary\": 90000,\n  \"start_date\": \"2026-10-15\",\n  \"end_date\": null,\n  \"is_active\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/employees"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Employee created or already exists', function () {",
+                  "    pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create unpaid leave for employee 9",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_id\": 9,\n  \"leave_type\": \"Unpaid\",\n  \"start_date\": \"2026-10-10\",\n  \"end_date\": \"2026-10-12\",\n  \"reason\": \"Payroll lifecycle unpaid leave test\"\n}"
+            },
+            "url": "{{baseUrl}}/api/leaves"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Leave created or conflicts on rerun', function () {",
+                  "    pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('unpaidLeaveId', pm.response.json().data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Approve unpaid leave for employee 9",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"manager_id\": 2,\n  \"manager_comment\": \"Approved for payroll lifecycle testing\"\n}"
+            },
+            "url": "{{baseUrl}}/api/leaves/{{unpaidLeaveId}}/approve"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Leave approval handled', function () {",
+                  "    pm.expect([200, 400, 404, 409]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test('If this returns 400 or 404, rerun with a fresh database or manually approve the created leave ID', function () {",
+                  "    pm.expect([200, 409, 400, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Generate Draft Payroll",
+      "item": [
+        {
+          "name": "Generate payroll as Draft",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pay_period\": \"{{payPeriod}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/payroll/generate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Payroll generated or already exists on rerun', function () {",
+                  "    pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "    const data = pm.response.json().data;",
+                  "    pm.test('Generated records start as Draft', function () {",
+                  "        pm.expect(data).to.be.an('array').that.is.not.empty;",
+                  "        data.forEach(record => pm.expect(record.status).to.eql('Draft'));",
+                  "    });",
+                  "    const unpaid = data.find(record => record.employee_id === Number(pm.collectionVariables.get('unpaidEmployeeId')));",
+                  "    const midMonth = data.find(record => record.employee_code === 'PAY-LIFE-MIDMONTH');",
+                  "    pm.collectionVariables.set('draftPayrollId', data[0].id);",
+                  "    if (unpaid) { pm.collectionVariables.set('unpaidPayrollId', unpaid.id); }",
+                  "    if (midMonth) { pm.collectionVariables.set('midMonthPayrollId', midMonth.id); }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Internal review can see Draft payroll",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Internal payroll list returns 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const records = pm.response.json().data;",
+                  "const currentPeriod = records.filter(record => record.pay_period === pm.collectionVariables.get('payPeriod'));",
+                  "if (currentPeriod.length > 0) {",
+                  "    const unpaid = currentPeriod.find(record => record.employee_id === Number(pm.collectionVariables.get('unpaidEmployeeId')));",
+                  "    const midMonth = currentPeriod.find(record => record.employee_code === 'PAY-LIFE-MIDMONTH');",
+                  "    pm.collectionVariables.set('draftPayrollId', currentPeriod[0].id);",
+                  "    if (unpaid) { pm.collectionVariables.set('unpaidPayrollId', unpaid.id); }",
+                  "    if (midMonth) { pm.collectionVariables.set('midMonthPayrollId', midMonth.id); }",
+                  "}",
+                  "pm.test('Internal list can include Draft payroll for review', function () {",
+                  "    pm.expect(currentPeriod.length).to.be.above(0);",
+                  "    pm.expect(currentPeriod.some(record => record.status === 'Draft')).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Duplicate generation returns 409",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pay_period\": \"{{payPeriod}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/payroll/generate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Duplicate payroll generation is blocked', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Draft Visibility Rules",
+      "item": [
+        {
+          "name": "Draft payslip is blocked",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll/{{draftPayrollId}}/payslip"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Draft payslip returns 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "pm.test('Response explains payslip is not finalized', function () {",
+                  "    pm.expect(pm.response.json().message).to.include('finalized');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Internal payroll by ID still sees Draft",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll/{{draftPayrollId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Internal payroll detail returns Draft', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().data.status).to.eql('Draft');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Employee history hides Draft period",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll/employee/{{unpaidEmployeeId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Employee endpoint succeeds or has no visible records', function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    const records = pm.response.json().data;",
+                  "    pm.test('Draft current period is hidden from employee history', function () {",
+                  "        const visibleDraft = records.find(record => record.pay_period === pm.collectionVariables.get('payPeriod') && record.status === 'Draft');",
+                  "        pm.expect(visibleDraft).to.eql(undefined);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Finalize Payroll",
+      "item": [
+        {
+          "name": "Finalize unpaid leave employee payroll",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"manager_id\": {{managerId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/payroll/{{unpaidPayrollId}}/finalize"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Draft payroll finalizes or is already finalized on rerun', function () {",
+                  "    pm.expect([200, 409]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Status changed to Finalized', function () {",
+                  "        pm.expect(pm.response.json().data.status).to.eql('Finalized');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Finalized payslip is visible",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll/{{unpaidPayrollId}}/payslip"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Payslip returns 200 after finalization', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Payslip includes employee, earnings, deductions, and net pay', function () {",
+                  "    const payslip = pm.response.json().data;",
+                  "    pm.expect(payslip).to.have.property('employee');",
+                  "    pm.expect(payslip).to.have.property('earnings');",
+                  "    pm.expect(payslip).to.have.property('deductions');",
+                  "    pm.expect(payslip).to.have.property('net_pay');",
+                  "    pm.expect(['Finalized', 'Paid']).to.include(payslip.status);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Employee history now includes finalized period",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll/employee/{{unpaidEmployeeId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Employee history returns visible payroll', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Finalized current period is visible', function () {",
+                  "    const records = pm.response.json().data;",
+                  "    const payroll = records.find(record => record.pay_period === pm.collectionVariables.get('payPeriod'));",
+                  "    pm.expect(payroll).to.exist;",
+                  "    pm.expect(['Finalized', 'Paid']).to.include(payroll.status);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cannot finalize the same payroll twice",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"manager_id\": {{managerId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/payroll/{{unpaidPayrollId}}/finalize"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Second finalize returns 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - Payroll Calculation Assertions",
+      "item": [
+        {
+          "name": "Unpaid leave deduction was calculated",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll/{{unpaidPayrollId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Unpaid leave payroll has deduction fields', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const payroll = pm.response.json().data;",
+                  "    pm.expect(payroll.unpaid_leave_days).to.be.at.least(0);",
+                  "    if (payroll.unpaid_leave_days > 0) {",
+                  "        pm.expect(payroll.unpaid_leave_deduction).to.be.above(0);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tax boundary and mid-month checks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Payroll list returns 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const records = pm.response.json().data.filter(record => record.pay_period === pm.collectionVariables.get('payPeriod'));",
+                  "const b24000 = records.find(record => record.employee_code === 'PAY-LIFE-24000');",
+                  "const b50000 = records.find(record => record.employee_code === 'PAY-LIFE-50000');",
+                  "const b100000 = records.find(record => record.employee_code === 'PAY-LIFE-100000');",
+                  "const midMonth = records.find(record => record.employee_code === 'PAY-LIFE-MIDMONTH');",
+                  "pm.test('24000 salary has zero tax', function () {",
+                  "    pm.expect(b24000).to.exist;",
+                  "    pm.expect(b24000.gross_pay).to.eql(24000);",
+                  "    pm.expect(b24000.tax_deduction).to.eql(0);",
+                  "});",
+                  "pm.test('50000 salary has expected tax', function () {",
+                  "    pm.expect(b50000).to.exist;",
+                  "    pm.expect(b50000.gross_pay).to.eql(50000);",
+                  "    pm.expect(b50000.tax_deduction).to.eql(2600);",
+                  "});",
+                  "pm.test('100000 salary has expected tax and uncapped social security', function () {",
+                  "    pm.expect(b100000).to.exist;",
+                  "    pm.expect(b100000.gross_pay).to.eql(100000);",
+                  "    pm.expect(b100000.tax_deduction).to.eql(12600);",
+                  "    pm.expect(b100000.social_security_deduction).to.eql(5000);",
+                  "});",
+                  "pm.test('Mid-month joiner is prorated', function () {",
+                  "    pm.expect(midMonth).to.exist;",
+                  "    pm.expect(midMonth.basic_salary).to.eql(90000);",
+                  "    pm.expect(midMonth.gross_pay).to.eql(51000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Validation and Error Handling",
+      "item": [
+        {
+          "name": "Generate payroll missing pay_period",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": "{{baseUrl}}/api/payroll/generate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Missing pay_period returns 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generate payroll invalid period format",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"pay_period\": \"2026/10\"\n}" },
+            "url": "{{baseUrl}}/api/payroll/generate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Invalid format returns 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generate payroll invalid month",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"pay_period\": \"2026-13\"\n}" },
+            "url": "{{baseUrl}}/api/payroll/generate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Invalid month returns 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Finalize missing manager_id",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": "{{baseUrl}}/api/payroll/{{draftPayrollId}}/finalize"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Missing manager_id returns 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get payroll invalid ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll/not-a-number"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Invalid payroll ID returns 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get payroll missing ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/payroll/999999"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Missing payroll returns 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

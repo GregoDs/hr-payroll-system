@@ -1,6 +1,8 @@
 const leaveModel = require("./leave.model");
 
 
+
+
 async function createLeaveRequest(leaveRequestData) {
 
     const startDate = parseDate(leaveRequestData.start_date, "Start date is invalid.", 400);
@@ -51,10 +53,14 @@ async function createLeaveRequest(leaveRequestData) {
 }
 
 
+
+
+
 //Get all leave requests existing
 async function getAllLeaveRequests() {
     return await leaveModel.getAllLeaveRequests();
 }
+
 
 
 //Get a single leave request by the id requested
@@ -63,24 +69,20 @@ async function getLeaveRequestById(leaveId) {
     if (!leaveId) {
         throw createError("Leave request ID is required.", 400);
     }
-
     const leaveRequest = await leaveModel.getLeaveRequestById(leaveId);
 
     if (!leaveRequest) {
         throw createError("Leave request not found.", 404);
     }
-
     return leaveRequest;
 }
 
 
 //Get all leave requests for a particular employee
 async function getLeaveRequestsByEmployeeId(employeeId) {
-
     if (!employeeId) {
         throw createError("Employee id is required.", 400);
     }
-
     return await leaveModel.getLeaveRequestsByEmployeeId(employeeId);
 }
 
@@ -90,9 +92,8 @@ async function approveLeaveRequest(leaveId, managerId, comment) {
     if (!managerId) {
         throw createError("Manager id is required.", 400);
     }
-
     const leaveRequest = await getLeaveRequestById(leaveId);
-
+    
     if (leaveRequest.status !== "Pending") {
         throw createError("Only pending leave requests can be approved.", 409);
     }
@@ -173,11 +174,9 @@ function getMinimumNoticeDays(leaveType) {
     if (leaveType === "Sick" || leaveType === "Compassionate") {
         return 0;
     }
-
     if (leaveType === "Maternity" || leaveType === "Paternity") {
         return 14;
     }
-
     return 7;
 }
 
