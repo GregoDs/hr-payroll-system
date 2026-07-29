@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "express": "^5.2.1",
-    "sqlite3": "^6.0.1"
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@emnapi/core": "^2.0.0-alpha.3",
