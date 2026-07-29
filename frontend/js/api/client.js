@@ -1,5 +1,10 @@
 const configuredBaseUrl = document.querySelector('meta[name="api-base-url"]')?.content;
-export const API_BASE_URL = configuredBaseUrl || "http://localhost:3000/api";
+const isLocalStaticServer = ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
+const localBackendBaseUrl = "http://localhost:3000/api";
+
+export const API_BASE_URL = configuredBaseUrl === "/api" && isLocalStaticServer
+  ? localBackendBaseUrl
+  : configuredBaseUrl || localBackendBaseUrl;
 
 export async function apiRequest(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {

@@ -71,6 +71,14 @@ Open:
 http://localhost:5500
 ```
 
+When the frontend is served from `localhost`, API requests automatically go to:
+
+```text
+http://localhost:3000/api
+```
+
+On Vercel, the same frontend uses `/api` and Vercel proxies those requests to the hosted Render API.
+
 Do not open the frontend directly with `file://`, because browser module loading can fail.
 
 ## Demo accounts
