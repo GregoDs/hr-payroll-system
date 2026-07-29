@@ -6,6 +6,16 @@ The app covers employee records, leave approvals and monthly payroll. I focused 
 
 Repository: <https://github.com/GregoDs/hr-payroll-system>
 
+## Live demo
+
+- Frontend: <https://hr-payroll-system-snowy.vercel.app>
+- Backend API: <https://hr-payroll-api-ke4e.onrender.com>
+- API health check: <https://hr-payroll-api-ke4e.onrender.com/api/health>
+
+The frontend is hosted on Vercel. API requests from the frontend are proxied through Vercel from `/api/*` to the Render backend.
+
+The backend is hosted on Render. It uses SQLite with the committed sample database for the demo. On Render's free environment, runtime data changes are not guaranteed to persist after restarts or redeploys.
+
 ## Stack
 
 - Backend: Express
@@ -239,7 +249,7 @@ I prioritized:
 - Add audit logs for salary changes and payroll finalization.
 - Add working-day calendars and public holidays.
 - Add end-to-end browser tests.
-- Host the frontend/backend for easier review.
+- Move the hosted backend from SQLite to a persistent managed database such as PostgreSQL.
 
 ## Submission files
 
@@ -247,5 +257,5 @@ I prioritized:
 - SQL dump: `backend/src/database/hr_payroll_dump.sql`
 - Screenshots: `assets/screenshots`
 - README: this file
-
-Hosting is optional. The project is ready to run locally from the cloned repository.
+- Live frontend: <https://hr-payroll-system-snowy.vercel.app>
+- Live backend API: <https://hr-payroll-api-ke4e.onrender.com>
