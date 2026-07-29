@@ -23,11 +23,6 @@ function setButtonLoading(button, loading) {
 }
 
 async function bindLogin() {
-  if (sessionStorage.getItem(SESSION_USER_KEY)) {
-    location.replace(DASHBOARD_URL);
-    return;
-  }
-
   $("#login-form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = event.currentTarget;

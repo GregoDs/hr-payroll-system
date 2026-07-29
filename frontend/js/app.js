@@ -349,15 +349,21 @@ async function init() {
     $("#theme-toggle").setAttribute("aria-label", "Switch to light mode");
   }
   try {
+    if (!sessionStorage.getItem(SESSION_USER_KEY)) {
+      showLogin();
+      return;
+    }
+
     await loadPagePartials();
     app.data = await store.load();
     const sessionEmployee = restoreSession();
-    if (sessionEmployee) {
-      enterApp(sessionEmployee);
-      navigate(location.hash.slice(1) || "overview", false);
-    } else {
+    if (!sessionEmployee) {
       showLogin();
+      return;
     }
+
+    enterApp(sessionEmployee);
+    navigate(location.hash.slice(1) || "overview", false);
   } catch (error) {
     const root = $("#views-root");
     if (root) {
