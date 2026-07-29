@@ -1,125 +1,251 @@
-# PeopleOps HR & Payroll
+# HR & Payroll System
 
-Software Engineering Practical Test submission for Vunoh Global Services.
+Small HR and payroll system for the Software Engineer Practical Test.
 
-The repository contains an Express/SQLite backend and a framework-free frontend built with semantic HTML, plain CSS and vanilla JavaScript. The frontend is connected to the Express API and persists operational changes in SQLite.
+The app covers employee records, leave approvals and monthly payroll. I focused on making the core business rules work properly instead of only building CRUD screens.
 
-## What was prioritized
+Repository: <https://github.com/GregoDs/hr-payroll-system>
 
-The current frontend prioritizes the operational paths that carry the most risk:
+## Stack
 
-- Employee records, search, filtering, editing, reporting structure and reversible deactivation
-- Leave submission and manager decisions with visible coverage, notice, overlap and balance checks
-- Leave balances, weekly absence visibility and aging/escalation indicators
-- Monthly payroll generation, mid-month proration, unpaid-leave adjustments, progressive tax, social security and payslip review
-- Keyboard navigation, focus-managed dialogs, reduced-motion support and responsive layouts
-- A low-glare warm light theme by default, with a restrained dark theme remembered per browser
+- Backend: Express
+- Frontend: HTML, CSS, vanilla JavaScript
+- Database: SQLite
+- Tests: Node test runner
 
-The legacy mock adapter and fixtures remain available for unit tests, but the running application uses `frontend/js/data/live-store.js`.
+## Screenshots
 
-## Frontend structure
+Screenshots are in `assets/screenshots`.
 
-The frontend is still a vanilla JavaScript single-page app, but the files are now separated by responsibility:
+![Screenshot 1](assets/screenshots/Screenshot%202026-07-29%20at%2004.10.28.png)
 
-- `frontend/index.html` is the application shell: sidebar, modal layer, toast region and the page outlet.
-- `frontend/pages/*.html` contains the readable page markup for dashboard, employees, leave, payroll and reports.
-- `frontend/css/main.css` only imports the real CSS files from `base`, `components` and `pages`.
-- `frontend/js/pages/*.js` is the page registry that tells the app which HTML partials to load.
-- `frontend/js/app.js` owns shared state, rendering, forms and interactions while the backend is still deferred.
+![Screenshot 2](assets/screenshots/Screenshot%202026-07-29%20at%2004.10.48.png)
 
-## Run the application
+![Screenshot 3](assets/screenshots/Screenshot%202026-07-29%20at%2004.11.17.png)
 
-In one terminal:
+## How to run locally
+
+Clone the repo:
+
+```bash
+git clone https://github.com/GregoDs/hr-payroll-system.git
+cd hr-payroll-system
+```
+
+Install and start the backend:
 
 ```bash
 cd backend
 npm install
-npm start
+npm run db:init
+npm run db:seed
+npm run dev
 ```
 
-In another terminal, from the repository root:
+The backend runs on:
+
+```text
+http://localhost:3000
+```
+
+In a second terminal, start the frontend from the project root:
 
 ```bash
+cd hr-payroll-system
 python3 -m http.server 5500 --directory frontend
 ```
 
-Then open:
+Open:
 
 ```text
 http://localhost:5500
 ```
 
-Alternatively, use a VS Code Live Server extension and serve the `frontend` directory. Do not open the HTML through `file://`; browsers commonly block the JavaScript module and partial-loading requests from local files.
+Do not open the frontend directly with `file://`, because browser module loading can fail.
 
-## Run the frontend tests
+## Demo accounts
 
-Node.js 18 or newer is required:
+The login page has demo account buttons. Select one and it fills the email and password.
 
-```bash
-cd frontend
-npm test
+Password for demo users:
+
+```text
+12345
 ```
 
-The tests use Node's built-in test runner and require no downloaded packages.
+| User | Email | Use case |
+| --- | --- | --- |
+| Grace Mwangi | `grace@company.com` | Admin access |
+| Alice Kimani | `alice@company.com` | HR workflows |
+| Brian Maina | `brian@company.com` | Employee view |
 
-The API base defaults to `http://localhost:3000/api`. To use another frontend origin, set
-`FRONTEND_ORIGIN`; to override the demo login password, set `DEMO_PASSWORD`. The current
-database schema does not store password hashes, so the demo password is not production authentication.
+## SQL dump
 
-## Leave safeguards and thresholds
+The SQL dump is committed here:
 
-The mock workflow applies client-side operational checks:
+```text
+backend/src/database/hr_payroll_dump.sql
+```
 
-- Annual allowance: 21 calendar days
-- Standard minimum notice: 7 calendar days
-- Maternity and paternity notice: 14 calendar days
-- Sick and compassionate leave notice: 0 days
-- Team coverage: at most one approved colleague from a team away during the same dates
-- Pending escalation: requests waiting 3 or more days are marked for escalation
-- Active pending/approved requests cannot overlap for the same employee
-- Only pending requests can be approved or rejected
-- Inactive employees cannot have leave approved
-- Annual requests cannot exceed remaining balance
-- End date must be on or after start date
+It contains the schema and sample data:
 
-Frontend checks provide early feedback only. The backend must remain authoritative once integration is enabled.
+- teams
+- employees
+- leave requests
+- generated payroll records
 
-## Payroll formula and assumptions
+To recreate the SQLite database from the dump:
 
-Currency is KES and values are formatted with `Intl.NumberFormat("en-KE")`.
+```bash
+sqlite3 backend/src/database/hr_payroll.db < backend/src/database/hr_payroll_dump.sql
+```
 
-1. Monthly payroll uses a fixed 30-day denominator.
-2. `daily rate = monthly basic salary / 30`
-3. Mid-month joiner pay is the daily rate multiplied by eligible calendar days, capped at 30.
-4. Only approved unpaid leave overlapping the selected pay period is deducted.
-5. `gross pay = prorated salary - unpaid leave deduction`, never below zero.
-6. Tax is progressive:
-   - 0% on the first KSh 24,000
-   - 10% above KSh 24,000 through KSh 50,000
-   - 20% above KSh 50,000 through KSh 100,000
-   - 30% above KSh 100,000
-7. Social security is 5% of gross pay, capped at KSh 6,000.
-8. `net pay = gross pay - tax - social security - other deductions`, never below zero.
-9. Other deductions currently default to zero.
-10. Duplicate payroll generation for the same month is blocked.
-11. Historical payroll remains visible even if an employee later becomes inactive.
+The normal local setup can also use:
 
-Automated cases cover zero tax, exact tax-bracket boundaries, the social-security cap, mid-month joining and approved unpaid leave.
+```bash
+cd backend
+npm run db:init
+npm run db:seed
+```
 
-## Known limitations
+To regenerate the dump after changing local data:
 
-- Authentication uses a shared demo password and role permissions are represented visually but not enforced server-side.
-- Calendar-day leave calculations do not yet exclude weekends or public holidays.
-- Leave allowances are currently a single annual default rather than per-type accrual records.
-- Team coverage uses a fixed threshold instead of configurable team staffing requirements.
-- Payroll records can be generated and reviewed in mock mode, but the complete draft/finalized/paid transition controls are not yet exposed.
-- The Google Fonts import requires a network connection; the system font fallbacks remain usable offline.
+```bash
+sqlite3 backend/src/database/hr_payroll.db .dump > backend/src/database/hr_payroll_dump.sql
+```
 
-## With more time
+## Main features
 
-- Connect the isolated store interface to the existing Express endpoints and make server rules authoritative
-- Add persisted leave-balance and team configuration tables
-- Add public-holiday-aware working-day calculations
-- Add authentication, role permissions and audit history
-- Add payroll adjustments for underpayments and overpayments
-- Add end-to-end browser tests for keyboard, mobile and decision workflows
+### Employee records
+
+- Add and edit employees.
+- Store team, manager, role, start date, salary and employment type.
+- Show reporting lines.
+- Deactivate employees instead of deleting them.
+- Inactive employees keep their old records and payroll history.
+- Inactive employees cannot log in.
+
+The manager and team fields are linked. A manager belongs to one team, so the app prevents assigning an employee to a manager from a different team.
+
+### Leave management
+
+Employees can request leave. HR/admin users can approve or reject requests.
+
+Rules implemented:
+
+- Annual leave allowance is 21 days.
+- Annual, unpaid and normal planned leave require 7 days notice.
+- Maternity and paternity require 14 days notice.
+- Sick and compassionate leave require no notice.
+- An employee cannot have overlapping pending or approved leave.
+- Ordinary leave is blocked if another person in the same team is already away for those dates.
+- Sick leave can still be submitted as an emergency, but it still counts as someone being away when checking later planned leave.
+- Pending requests older than 3 days are treated as needing attention.
+
+This was mainly to handle team coverage, duplicate requests, short-notice leave and requests sitting too long.
+
+### Payroll
+
+HR/admin users can generate payroll for a month. Payroll starts as draft, then can be finalized.
+
+Rules implemented:
+
+- Payroll can only be generated once per period.
+- Draft payroll can be refreshed if leave or salary data changes before finalization.
+- Basic salary can be edited while payroll is still draft.
+- Finalized payroll cannot be edited.
+- Employee payslips are only available after payroll is finalized.
+- Approved unpaid leave reduces gross pay.
+- Mid-month joiners are prorated.
+
+## Payroll formula
+
+The formula is simple and documented. It is not meant to match a specific country's tax law.
+
+```text
+Payroll days per month = 30
+Daily rate = Basic salary / 30
+Unpaid leave deduction = Daily rate * approved unpaid leave days
+Gross pay = prorated salary - unpaid leave deduction
+```
+
+Tax brackets:
+
+| Gross pay band | Rate |
+| --- | ---: |
+| 0 - 24,000 | 0% |
+| Over 24,000 - 50,000 | 10% |
+| Over 50,000 - 100,000 | 20% |
+| Over 100,000 | 30% |
+
+Other deductions:
+
+```text
+Social security = 5% of gross pay, capped at 6,000
+Net pay = gross pay - tax - social security
+```
+
+Example for salary `50,000` with `6` unpaid leave days:
+
+```text
+Daily rate = 50,000 / 30 = 1,666.67
+Unpaid leave deduction = 1,666.67 * 6 = 10,000
+Gross pay = 40,000
+Tax = 1,600
+Social security = 2,000
+Net pay = 36,400
+```
+
+## Tests
+
+Run frontend tests:
+
+```bash
+npm --prefix frontend test
+```
+
+Run backend tests:
+
+```bash
+npm --prefix backend test
+```
+
+The tests focus on the main business logic:
+
+- leave notice rules
+- leave overlap checks
+- team coverage checks
+- sick leave exception
+- annual leave balance
+- payroll tax brackets
+- social security cap
+- mid-month proration
+- unpaid leave payroll deduction
+
+## What I prioritized
+
+I prioritized:
+
+1. Employee records and deactivation.
+2. Leave rules that prevent obvious operational problems.
+3. Payroll calculations that are tied to leave.
+4. Draft payroll review before finalizing payslips.
+5. A frontend that consumes the backend instead of mock data.
+
+## What I would improve with more time
+
+- Add proper production authentication.
+- Add stricter backend role-based authorization.
+- Add audit logs for salary changes and payroll finalization.
+- Add working-day calendars and public holidays.
+- Add end-to-end browser tests.
+- Host the frontend/backend for easier review.
+
+## Submission files
+
+- Source code: full repo
+- SQL dump: `backend/src/database/hr_payroll_dump.sql`
+- Screenshots: `assets/screenshots`
+- README: this file
+
+Hosting is optional. The project is ready to run locally from the cloned repository.

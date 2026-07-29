@@ -44,7 +44,7 @@
               </svg>
               Email
             </span>
-            <input id="login-email" name="email" type="email" value="brian@company.com" autocomplete="username" required>
+            <input id="login-email" name="email" type="email" value="" autocomplete="username" required>
           </label>
 
           <label class="field">
@@ -54,12 +54,12 @@
               </svg>
               Password
             </span>
-            <input id="login-password" name="password" type="password" value="12345" autocomplete="current-password" required>
+            <input id="login-password" name="password" type="password" value="" autocomplete="current-password" required>
           </label>
 
           <p class="form-error" id="login-error" aria-live="polite"></p>
 
-          <button class="button button--primary" type="submit">
+          <button class="button button--primary login-submit" id="login-submit" type="submit">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h14m-6-6 6 6-6 6"/>
             </svg>
@@ -68,10 +68,25 @@
         </form>
 
         <div class="login-hints">
-          <p class="eyebrow">Select Demo accounts below</p>
-          <button class="text-button" type="button" data-login-email="grace@company.com">Grace · Admin</button>
-          <button class="text-button" type="button" data-login-email="alice@company.com">Alice · HR</button>
-          <button class="text-button" type="button" data-login-email="brian@company.com">Brian · Employee</button>
+          <p class="eyebrow">Select which user to login as</p>
+          <button class="demo-login-option" type="button" data-login-email="grace@company.com">
+            <span>Grace · Admin</span>
+            <strong>grace@company.com</strong>
+            <em>Password: 12345</em>
+            <b aria-hidden="true">↗</b>
+          </button>
+          <button class="demo-login-option" type="button" data-login-email="alice@company.com">
+            <span>Alice · HR</span>
+            <strong>alice@company.com</strong>
+            <em>Password: 12345</em>
+            <b aria-hidden="true">↗</b>
+          </button>
+          <button class="demo-login-option" type="button" data-login-email="brian@company.com">
+            <span>Brian · Employee</span>
+            <strong>brian@company.com</strong>
+            <em>Password: 12345</em>
+            <b aria-hidden="true">↗</b>
+          </button>
         </div>
       </section>
     </main>

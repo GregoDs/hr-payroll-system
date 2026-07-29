@@ -3,6 +3,17 @@ import { DASHBOARD_URL, SESSION_USER_KEY } from "./session.js";
 
 const $ = (selector, scope = document) => scope.querySelector(selector);
 const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
+const DEMO_PASSWORD = "12345";
+
+function selectDemoUser(email) {
+  $("#login-email").value = email;
+  $("#login-password").value = DEMO_PASSWORD;
+  $("#login-error").textContent = "";
+  $("#login-submit").classList.add("is-ready");
+  $$("[data-login-email]").forEach((button) => {
+    button.classList.toggle("is-selected", button.dataset.loginEmail === email);
+  });
+}
 
 function setButtonLoading(button, loading) {
   button.disabled = loading;
@@ -39,12 +50,12 @@ async function bindLogin() {
 
   $$("[data-login-email]").forEach((button) => {
     button.addEventListener("click", () => {
-      $("#login-email").value = button.dataset.loginEmail;
-      $("#login-password").value = "12345";
-      $("#login-error").textContent = "";
+      selectDemoUser(button.dataset.loginEmail);
       $("#login-password").focus();
     });
   });
+
+  $("#login-submit").classList.remove("is-ready");
 }
 
 bindLogin();
