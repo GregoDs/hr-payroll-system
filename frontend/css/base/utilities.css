@@ -21,3 +21,21 @@
   white-space: nowrap !important;
   border: 0 !important;
 }
+
+.icon {
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.status-icon { color: var(--success); }
+.status-icon--pulse { animation: pulse 2.2s ease-in-out infinite; }
+
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--danger); }

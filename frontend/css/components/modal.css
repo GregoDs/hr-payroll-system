@@ -28,6 +28,26 @@
 .form-grid { display: grid; gap: 14px; }
 .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
 .form-error { color: var(--danger); font-size: .59rem; }
+.decision-message {
+  margin-top: 18px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid color-mix(in srgb, var(--success) 42%, var(--border));
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 7%, var(--surface-3));
+  font-size: .62rem;
+}
+.decision-message.is-error {
+  border-color: color-mix(in srgb, var(--danger) 42%, var(--border));
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 7%, var(--surface-3));
+}
+.decision-message .icon {
+  width: 15px;
+  height: 15px;
+}
 .payslip-head { padding-bottom: 20px; border-bottom: 1px solid var(--border); }
 .payslip-head h3 { margin: 0 0 5px; font-size: 1.4rem; letter-spacing: -.04em; }
 .payslip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin-top: 18px; background: var(--border); }

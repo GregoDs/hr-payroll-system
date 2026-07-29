@@ -47,3 +47,105 @@ test("approval blocks insufficient balance", () => {
   assert.equal(result.valid, false);
   assert.match(result.problems.join(" "), /Insufficient annual leave balance/);
 });
+
+test("approval blocks overlapping pending leave in the same team", () => {
+  const request = {
+    id: 2,
+    employee_id: 1,
+    leave_type: "Annual",
+    start_date: "2026-09-10",
+    end_date: "2026-09-14",
+    total_days: 5,
+    status: "Pending",
+  };
+  const result = validateLeaveApproval(request, {
+    employees: [
+      { id: 1, team_id: 1, is_active: 1 },
+      { id: 2, team_id: 1, is_active: 1 },
+    ],
+    leaveRequests: [
+      request,
+      {
+        id: 3,
+        employee_id: 2,
+        leave_type: "Annual",
+        start_date: "2026-09-12",
+        end_date: "2026-09-16",
+        total_days: 5,
+        status: "Pending",
+      },
+    ],
+    today: "2026-07-28",
+  });
+
+  assert.equal(result.valid, false);
+  assert.match(result.problems.join(" "), /already away during those dates/);
+});
+
+test("sick leave bypasses team coverage conflict", () => {
+  const request = {
+    id: 2,
+    employee_id: 1,
+    leave_type: "Sick",
+    start_date: "2026-09-10",
+    end_date: "2026-09-14",
+    total_days: 5,
+    status: "Pending",
+  };
+  const result = validateLeaveApproval(request, {
+    employees: [
+      { id: 1, team_id: 1, is_active: 1 },
+      { id: 2, team_id: 1, is_active: 1 },
+    ],
+    leaveRequests: [
+      request,
+      {
+        id: 3,
+        employee_id: 2,
+        leave_type: "Annual",
+        start_date: "2026-09-12",
+        end_date: "2026-09-16",
+        total_days: 5,
+        status: "Pending",
+      },
+    ],
+    today: "2026-09-10",
+  });
+
+  assert.equal(result.valid, true);
+  assert.equal(result.concurrentAbsences, 1);
+});
+
+test("approved sick leave blocks ordinary leave in the same team", () => {
+  const request = {
+    id: 2,
+    employee_id: 1,
+    leave_type: "Annual",
+    start_date: "2026-09-10",
+    end_date: "2026-09-14",
+    total_days: 5,
+    status: "Pending",
+  };
+  const result = validateLeaveApproval(request, {
+    employees: [
+      { id: 1, team_id: 1, is_active: 1 },
+      { id: 2, team_id: 1, is_active: 1 },
+    ],
+    leaveRequests: [
+      request,
+      {
+        id: 3,
+        employee_id: 2,
+        leave_type: "Sick",
+        start_date: "2026-09-12",
+        end_date: "2026-09-16",
+        total_days: 5,
+        status: "Approved",
+      },
+    ],
+    today: "2026-07-28",
+  });
+
+  assert.equal(result.valid, false);
+  assert.match(result.problems.join(" "), /already away during those dates/);
+});

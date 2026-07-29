@@ -2,10 +2,18 @@
 .toast {
   width: min(340px, calc(100vw - 32px));
   padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--paper);
   background: var(--surface-1);
   border: 1px solid var(--border-strong);
   font-size: .62rem;
   animation: toast-in .2s ease-out;
+}
+.toast .icon {
+  width: 15px;
+  height: 15px;
+  color: var(--success);
 }
 @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } }

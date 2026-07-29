@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta name="api-base-url" content="http://localhost:3000/api">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="PeopleOps sign in">
+    <title>Sign in — PeopleOps</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <script type="module" src="./js/login.js"></script>
+  </head>
+  <body>
+    <main class="login-page" aria-labelledby="login-title">
+      <section class="login-page__brand">
+        <a class="wordmark" href="./login.html" aria-label="PeopleOps login">
+          <span>people</span>
+          <strong>ops</strong>
+          <b>.</b>
+        </a>
+
+        <div>
+          <p class="eyebrow accent-text">Internal workforce console</p>
+          <h1 id="login-title">
+            Sign in to<br>your workspace
+          </h1>
+          <p class="page-intro">
+           Use the email address and the password provided below for either the hr priviledges or the user priviledges
+          </p>
+        </div>
+
+        <div class="login-page__meta">
+          <span>hr</span>
+          <span>grace@company.com</span>
+          <span>Password: 12345</span>
+        </div>
+      </section>
+
+      <section class="login-card" aria-label="Sign in form">
+        <form class="login-form" id="login-form">
+          <label class="field">
+            <span>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 6h16v12H4zM4 7l8 6 8-6"/>
+              </svg>
+              Email
+            </span>
+            <input id="login-email" name="email" type="email" value="brian@company.com" autocomplete="username" required>
+          </label>
+
+          <label class="field">
+            <span>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/>
+              </svg>
+              Password
+            </span>
+            <input id="login-password" name="password" type="password" value="12345" autocomplete="current-password" required>
+          </label>
+
+          <p class="form-error" id="login-error" aria-live="polite"></p>
+
+          <button class="button button--primary" type="submit">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14m-6-6 6 6-6 6"/>
+            </svg>
+            Sign in
+          </button>
+        </form>
+
+        <div class="login-hints">
+          <p class="eyebrow">Select Demo accounts below</p>
+          <button class="text-button" type="button" data-login-email="grace@company.com">Grace · Admin</button>
+          <button class="text-button" type="button" data-login-email="alice@company.com">Alice · HR</button>
+          <button class="text-button" type="button" data-login-email="brian@company.com">Brian · Employee</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

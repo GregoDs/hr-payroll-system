@@ -20,6 +20,15 @@ async function getEmployeeById(id) {
 
 // Create employee
 async function createEmployee(employeeData) {
+    employeeData = {
+        ...employeeData,
+        employee_code: employeeData.employee_code || await nextEmployeeCode(),
+        system_role: employeeData.system_role || "Employee",
+        manager_id: employeeData.manager_id || null,
+        end_date: employeeData.end_date || null,
+        is_active: employeeData.is_active === undefined ? 1 : Number(Boolean(employeeData.is_active))
+    };
+    await validateReportingRelationship(employeeData);
 
     const employeeCode = await employeeModel.getEmployeeByEmployeeCode(employeeData.employee_code);
     const employeeEmail = await employeeModel.getEmployeeByEmail(employeeData.email);
@@ -48,6 +57,15 @@ async function createEmployee(employeeData) {
     return await employeeModel.getEmployeeById(employeeId);
 }
 
+async function nextEmployeeCode() {
+    const employees = await employeeModel.getAllEmployees();
+    const nextNumber = employees.reduce((highest, employee) => {
+        const match = String(employee.employee_code || "").match(/(\d+)$/);
+        return Math.max(highest, match ? Number(match[1]) : 0);
+    }, 0) + 1;
+    return `EMP-${new Date().getFullYear()}-${String(nextNumber).padStart(3, "0")}`;
+}
+
 
 // Update employee
 async function updateEmployee(id, employeeData) {
@@ -56,6 +74,7 @@ async function updateEmployee(id, employeeData) {
     if (!existingEmployee) {
         throw createError("Employee not found.", 404);
     }
+    await validateReportingRelationship(employeeData, id);
 
     // Check email only if it changed
     if (employeeData.email !== existingEmployee.email) {
@@ -96,6 +115,44 @@ async function updateEmployee(id, employeeData) {
     await employeeModel.updateEmployee(id, employeeData);
 
     return await employeeModel.getEmployeeById(id);
+}
+
+async function validateReportingRelationship(employeeData, employeeId = null) {
+    const leaders = ["Manager", "Admin"];
+    if (leaders.includes(employeeData.system_role)) {
+        const employees = await employeeModel.getAllEmployees();
+        const existingLeader = employees.find((employee) =>
+            employee.id !== Number(employeeId) &&
+            employee.is_active &&
+            leaders.includes(employee.system_role) &&
+            Number(employee.team_id) === Number(employeeData.team_id)
+        );
+        if (existingLeader) {
+            throw createError(`${existingLeader.team_name} already has ${existingLeader.first_name} ${existingLeader.last_name} as its department manager.`, 409);
+        }
+        return;
+    }
+
+    if (!employeeData.manager_id) {
+        throw createError("A manager is required for this employee's team.", 400);
+    }
+
+    const manager = await employeeModel.getEmployeeById(Number(employeeData.manager_id));
+    if (!manager) {
+        throw createError("Selected manager was not found.", 400);
+    }
+    if (employeeId && manager.id === Number(employeeId)) {
+        throw createError("An employee cannot be their own manager.", 409);
+    }
+    if (!manager.is_active) {
+        throw createError("Selected manager is inactive.", 409);
+    }
+    if (!leaders.includes(manager.system_role)) {
+        throw createError("Selected employee is not a department manager.", 409);
+    }
+    if (Number(manager.team_id) !== Number(employeeData.team_id)) {
+        throw createError(`Selected manager belongs to ${manager.team_name}, not the employee's team.`, 409);
+    }
 }
 
 

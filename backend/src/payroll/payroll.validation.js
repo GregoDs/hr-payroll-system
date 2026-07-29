@@ -38,6 +38,28 @@ function validatePayrollDecision(req, res, next) {
 }
 
 
+function validateBasicSalaryUpdate(req, res, next) {
+
+    const basicSalary = Number(req.body.basic_salary);
+
+    if (req.body.basic_salary === undefined) {
+        const error = new Error("basic_salary is required.");
+        error.statusCode = 400;
+
+        return next(error);
+    }
+
+    if (!Number.isFinite(basicSalary) || basicSalary <= 0) {
+        const error = new Error("basic_salary must be a positive amount.");
+        error.statusCode = 400;
+
+        return next(error);
+    }
+
+    next();
+}
+
+
 function isValidPayPeriod(payPeriod) {
     return /^\d{4}-(0[1-9]|1[0-2])$/.test(payPeriod);
 }
@@ -45,5 +67,6 @@ function isValidPayPeriod(payPeriod) {
 
 module.exports = {
     validateGeneratePayroll,
-    validatePayrollDecision
+    validatePayrollDecision,
+    validateBasicSalaryUpdate
 };

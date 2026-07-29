@@ -1,7 +1,12 @@
 <section class="view" id="leave" data-view="leave" aria-labelledby="leave-title" hidden>
   <header class="page-header page-header--compact">
     <div>
-      <p class="eyebrow accent-text">Time away</p>
+      <p class="eyebrow accent-text">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>
+        </svg>
+        Time away
+      </p>
       <h1 id="leave-title">Leave desk</h1>
       <p class="page-intro">
         Submit requests, protect team coverage and resolve aging approvals.
@@ -9,6 +14,9 @@
     </div>
 
     <button class="button button--primary" id="request-leave" type="button">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
       Request leave
     </button>
   </header>
@@ -17,7 +25,12 @@
 
   <div class="toolbar">
     <label class="field">
-      <span>Request status</span>
+      <span>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5h16l-6 7v5l-4 2v-7Z"/>
+        </svg>
+        Request status
+      </span>
       <select id="leave-status-filter">
         <option value="all">All requests</option>
         <option>Pending</option>
@@ -27,7 +40,12 @@
     </label>
 
     <label class="field">
-      <span>Leave type</span>
+      <span>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>
+        </svg>
+        Leave type
+      </span>
       <select id="leave-type-filter">
         <option value="all">All types</option>
         <option>Annual</option>
@@ -42,6 +60,7 @@
     <table>
       <thead>
         <tr>
+          <th>No.</th>
           <th>Employee</th>
           <th>Type</th>
           <th>Dates</th>

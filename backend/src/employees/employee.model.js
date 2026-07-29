@@ -10,6 +10,19 @@ function getAllEmployees() {
         e.last_name,
         e.email,
         e.phone_number,
+        e.national_id,
+        e.kra_pin,
+        e.role_title,
+        e.system_role,
+        e.team_id,
+        e.manager_id,
+        e.employment_type,
+        e.salary,
+        e.start_date,
+        e.end_date,
+        e.is_active,
+        e.created_at,
+        e.updated_at,
         t.name AS team_name,
         m.first_name || ' ' || m.last_name AS manager_name
     FROM employees e
@@ -47,6 +60,8 @@ async function getEmployeeById(id) {
             e.kra_pin,
             e.role_title,
             e.system_role, 
+            e.team_id,
+            e.manager_id,
             e.employment_type,
             e.salary,
             e.start_date,
@@ -261,6 +276,7 @@ function updateEmployeeStatus(id, is_active) {
         UPDATE employees
         SET
             is_active = ?,
+            end_date = CASE WHEN ? = 1 THEN NULL ELSE date('now') END,
             updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
 
@@ -268,7 +284,7 @@ function updateEmployeeStatus(id, is_active) {
 
     return new Promise((resolve, reject) => {
 
-        db.run(query, [is_active, id], function (err) {
+        db.run(query, [is_active, is_active, id], function (err) {
 
             if (err) {
                 return reject(err);

@@ -41,7 +41,7 @@ export function teamAbsencesDuring(request, allRequests, employees) {
   return allRequests.filter((item) => {
     const colleague = employees.find((person) => person.id === item.employee_id);
     return item.id !== request.id &&
-      item.status === "Approved" &&
+      ["Pending", "Approved"].includes(item.status) &&
       colleague?.team_id === employee.team_id &&
       requestsOverlap(item, request);
   }).length;
@@ -59,7 +59,9 @@ export function validateLeaveApproval(request, { employees, leaveRequests, today
   if (request.status !== "Pending") problems.push("Request has already been processed.");
   if (request.leave_type === "Annual" && request.total_days > balance.remaining) problems.push("Insufficient annual leave balance.");
   if (notice < requiredNotice) problems.push(`Requires ${requiredNotice} days' notice.`);
-  if (concurrentAbsences >= MAX_TEAM_ABSENCES) problems.push("Team coverage would fall below the safe threshold.");
+  if (request.leave_type !== "Sick" && concurrentAbsences >= MAX_TEAM_ABSENCES) {
+    problems.push("Someone from this team is already away during those dates. Choose different dates or arrange cover first.");
+  }
   const overlap = leaveRequests.some((item) =>
     item.id !== request.id &&
     item.employee_id === request.employee_id &&

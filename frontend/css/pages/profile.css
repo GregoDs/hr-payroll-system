@@ -1,1 +1,49 @@
-/* Reserved for the signed-in profile page. */
+.profile-grid {
+  display: grid;
+  gap: 1px;
+  padding: 1px;
+  background: var(--border);
+}
+
+.profile-grid--compact {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.profile-card {
+  min-height: 118px;
+  padding: 17px;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  background: var(--surface-3);
+}
+
+.profile-card > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: .51rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+}
+
+.profile-card strong {
+  color: var(--paper);
+  font-size: 1rem;
+  letter-spacing: -.025em;
+}
+
+.profile-card em {
+  color: var(--text-secondary);
+  font-size: .62rem;
+  font-style: normal;
+  line-height: 1.4;
+}
+
+.profile-card .row-number {
+  margin-bottom: 6px;
+}

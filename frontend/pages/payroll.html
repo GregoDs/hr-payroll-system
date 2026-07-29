@@ -1,7 +1,12 @@
 <section class="view" id="payroll" data-view="payroll" aria-labelledby="payroll-title" hidden>
   <header class="page-header page-header--compact">
     <div>
-      <p class="eyebrow accent-text">Monthly run</p>
+      <p class="eyebrow accent-text">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 7h18v10H3zM7 11h.01M17 13h.01M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+        </svg>
+        Monthly run
+      </p>
       <h1 id="payroll-title">Payroll control</h1>
       <p class="page-intro">
         Review proration, statutory deductions and net pay before finalization.
@@ -10,12 +15,48 @@
 
     <div class="header-actions">
       <label class="compact-field">
-        <span>Pay period</span>
+        <span>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>
+          </svg>
+          Pay period
+        </span>
         <input id="pay-period" type="month" value="2026-07">
       </label>
 
+      <label class="compact-field">
+        <span>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5h16l-6 7v5l-4 2v-7Z"/>
+          </svg>
+          Payroll status
+        </span>
+        <select id="payroll-status-filter">
+          <option value="all">All statuses</option>
+          <option value="Draft">Draft</option>
+          <option value="Finalized">Finalized</option>
+        </select>
+      </label>
+
       <button class="button button--primary" id="generate-payroll" type="button">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6M9 16h4"/>
+        </svg>
         Generate payroll
+      </button>
+
+      <button class="button button--refresh" id="refresh-payroll" type="button">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 12a9 9 0 0 1-15.5 6.3M3 12A9 9 0 0 1 18.5 5.7M3 19v-5h5M21 5v5h-5"/>
+        </svg>
+        Refresh draft
+      </button>
+
+      <button class="button button--finalize" id="finalize-payroll" type="button">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3 5 6v5c0 5 3.5 8 7 10 3.5-2 7-5 7-10V6zM9 12l2 2 4-5"/>
+        </svg>
+        Finalize payroll
       </button>
     </div>
   </header>
@@ -25,7 +66,12 @@
 
   <div class="section-heading ledger-heading">
     <div>
-      <p class="eyebrow">Calculation ledger</p>
+      <p class="eyebrow">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M14 3H6v18h12V7zM14 3v4h4M8 13h8M8 17h5M8 9h2"/>
+        </svg>
+        Calculation ledger
+      </p>
       <h2>Payslips</h2>
     </div>
 
@@ -36,6 +82,7 @@
     <table>
       <thead>
         <tr>
+          <th>No.</th>
           <th>Employee</th>
           <th>Base salary</th>
           <th>Proration</th>

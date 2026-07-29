@@ -30,6 +30,15 @@ export const mockStore = {
     return copy(state);
   },
 
+  async login(email, password) {
+    await Promise.resolve();
+    if (password !== "12345") throw new Error("Use the demo password 12345.");
+    const employee = state.employees.find((item) => item.email.toLowerCase() === String(email).trim().toLowerCase());
+    if (!employee) throw new Error("No employee exists for that email.");
+    if (!employee.is_active) throw new Error("This employee account is inactive.");
+    return copy(employee);
+  },
+
   async decideLeave(id, decision, managerComment = null) {
     const request = state.leaveRequests.find((item) => item.id === Number(id));
     if (!request) throw new Error("Leave request was not found.");
@@ -125,5 +134,20 @@ export const mockStore = {
     }));
     state.payrollRecords.unshift(...records);
     return copy(records);
+  },
+
+  async finalizePayroll(payPeriod) {
+    const records = state.payrollRecords.filter((item) => item.pay_period === payPeriod);
+    if (!records.length) throw new Error(`No payroll exists for ${payPeriod}.`);
+    const drafts = records.filter((item) => item.status === "Draft");
+    if (!drafts.length) throw new Error(`No draft payroll remains for ${payPeriod}.`);
+    drafts.forEach((record) => {
+      record.status = "Finalized";
+      record.finalized_by = 1;
+      record.finalized_by_name = "Grace Mwangi";
+      record.finalized_at = "2026-07-29 12:00:00";
+      record.updated_at = "2026-07-29 12:00:00";
+    });
+    return copy(drafts);
   },
 };

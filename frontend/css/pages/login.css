@@ -1,1 +1,82 @@
-/* Login is out of scope for the current dummy-data dashboard. */
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  background: var(--surface-2);
+}
+
+.login-page__brand {
+  min-height: 44vh;
+  padding: 26px;
+  display: grid;
+  align-content: space-between;
+  gap: 42px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-1);
+}
+
+.login-page__brand h1 {
+  max-width: 620px;
+}
+
+.login-page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.login-page__meta span {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: .52rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.login-card {
+  padding: 26px;
+  display: grid;
+  align-content: center;
+  gap: 28px;
+  background: var(--surface-3);
+}
+
+.login-form {
+  display: grid;
+  gap: 15px;
+}
+
+.login-form .button {
+  width: 100%;
+}
+
+.login-hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.login-hints .eyebrow {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+@media (min-width: 850px) {
+  .login-page {
+    grid-template-columns: minmax(0, 1.15fr) minmax(420px, .85fr);
+  }
+
+  .login-page__brand {
+    min-height: 100vh;
+    padding: clamp(34px, 5vw, 70px);
+    border-right: 1px solid var(--border);
+    border-bottom: 0;
+  }
+
+  .login-card {
+    min-height: 100vh;
+    padding: clamp(34px, 5vw, 70px);
+  }
+}

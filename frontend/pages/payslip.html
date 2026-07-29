@@ -1,1 +1,34 @@
-<!-- Payslip detail currently renders in a modal from the payroll page. -->
+<section class="view" id="payslip" data-view="payslip" aria-labelledby="payslip-title" hidden>
+  <header class="page-header page-header--compact">
+    <div>
+      <p class="eyebrow accent-text">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6M9 16h4"/>
+        </svg>
+        Employee payroll
+      </p>
+      <h1 id="payslip-title">Payslips</h1>
+      <p class="page-intro">
+        Your generated payslips and net pay history.
+      </p>
+    </div>
+  </header>
+
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Period</th>
+          <th>Gross pay</th>
+          <th>Deductions</th>
+          <th>Net pay</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody id="my-payslip-table"></tbody>
+    </table>
+  </div>
+</section>

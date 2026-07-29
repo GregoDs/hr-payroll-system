@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en" data-theme="light">
-  <head>
+<head>
+  <meta name="api-base-url" content="http://localhost:3000/api">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="PeopleOps HR and payroll operations dashboard">
@@ -10,7 +11,8 @@
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <div class="app-shell">
+
+    <div class="app-shell" id="app-shell">
       <aside class="sidebar" aria-label="Application navigation">
         <div class="sidebar__top">
           <a class="wordmark" href="#overview" aria-label="PeopleOps overview">
@@ -35,26 +37,41 @@
         <nav class="primary-nav" id="primary-nav" aria-label="Primary">
           <a href="#overview" data-view-link="overview" aria-current="page">
             <span>01</span>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 13h6V4H4zM14 20h6V4h-6zM4 20h6v-3H4z"/>
+            </svg>
             Overview
           </a>
 
           <a href="#employees" data-view-link="employees">
             <span>02</span>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
             Employees
           </a>
 
           <a href="#leave" data-view-link="leave">
             <span>03</span>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>
+            </svg>
             Leave
           </a>
 
           <a href="#payroll" data-view-link="payroll">
             <span>04</span>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 7h18v10H3zM7 11h.01M17 13h.01M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+            </svg>
             Payroll
           </a>
 
           <a href="#reports" data-view-link="reports">
             <span>05</span>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 19V5M4 19h17M8 16V9M13 16V6M18 16v-4"/>
+            </svg>
             Reports
           </a>
         </nav>
@@ -75,15 +92,16 @@
           <p class="eyebrow">Signed in as</p>
           <strong>Grace Mwangi</strong>
           <span>HR Administrator</span>
-          <button class="text-button" type="button" data-demo-action="signout">Sign out →</button>
+          <button class="text-button" type="button" data-demo-action="signout">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+            </svg>
+            Sign out →
+          </button>
         </div>
       </aside>
 
       <main id="main-content">
-        <div class="demo-banner" role="status">
-          <span class="status-dot"></span>
-          Demo workspace · Changes stay in this browser session
-        </div>
         <div id="app-status" class="sr-only" aria-live="polite"></div>
         <div id="views-root" data-page-root></div>
       </main>

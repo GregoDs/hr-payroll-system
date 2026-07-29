@@ -1,4 +1,5 @@
 const leaveModel = require("./leave.model");
+const employeeModel = require("../employees/employee.model");
 
 
 
@@ -35,6 +36,22 @@ async function createLeaveRequest(leaveRequestData) {
 
     if (overlappingLeave) {
         throw createError("Employee already has an overlapping leave request.", 409);
+    }
+
+    if (leaveRequestData.leave_type !== "Sick") {
+        const teamCoverageConflict = await findTeamCoverageConflict({
+            employeeId: Number(leaveRequestData.employee_id),
+            startDate,
+            endDate,
+            ignoreLeaveId: null
+        });
+
+        if (teamCoverageConflict) {
+            throw createError(
+                `This leave cannot be submitted because ${teamCoverageConflict.employee_name} is already scheduled to be away from the same team during those dates. Please choose different dates or arrange cover first.`,
+                409
+            );
+        }
     }
 
     const totalDays = calculateLeaveDays(startDate, endDate);
@@ -96,6 +113,24 @@ async function approveLeaveRequest(leaveId, managerId, comment) {
     
     if (leaveRequest.status !== "Pending") {
         throw createError("Only pending leave requests can be approved.", 409);
+    }
+
+    if (leaveRequest.leave_type !== "Sick") {
+        const startDate = parseDate(leaveRequest.start_date, "Leave start date is invalid.", 400);
+        const endDate = parseDate(leaveRequest.end_date, "Leave end date is invalid.", 400);
+        const teamCoverageConflict = await findTeamCoverageConflict({
+            employeeId: Number(leaveRequest.employee_id),
+            startDate,
+            endDate,
+            ignoreLeaveId: Number(leaveId)
+        });
+
+        if (teamCoverageConflict) {
+            throw createError(
+                `This leave cannot be approved because ${teamCoverageConflict.employee_name} is already scheduled to be away from the same team during those dates. Approving both would leave the team short-staffed.`,
+                409
+            );
+        }
     }
 
     await leaveModel.updateLeaveStatus(leaveId, {
@@ -204,6 +239,37 @@ function hasSameLeaveDates(leaveRequest, startDate, endDate) {
     const existingEndDate = parseDate(leaveRequest.end_date, "Existing leave end date is invalid.", 400);
 
     return existingStartDate.getTime() === startDate.getTime() && existingEndDate.getTime() === endDate.getTime();
+}
+
+
+async function findTeamCoverageConflict({ employeeId, startDate, endDate, ignoreLeaveId }) {
+
+    const employee = await employeeModel.getEmployeeById(employeeId);
+    const leaveRequests = await leaveModel.getAllLeaveRequests();
+
+    if (!employee?.team_id) {
+        return null;
+    }
+
+    return leaveRequests.find((leaveRequest) => {
+        if (ignoreLeaveId && Number(leaveRequest.id) === Number(ignoreLeaveId)) {
+            return false;
+        }
+        if (Number(leaveRequest.employee_id) === Number(employeeId)) {
+            return false;
+        }
+        if (!["Pending", "Approved"].includes(leaveRequest.status)) {
+            return false;
+        }
+        if (Number(leaveRequest.team_id) !== Number(employee.team_id)) {
+            return false;
+        }
+
+        const existingStartDate = parseDate(leaveRequest.start_date, "Existing leave start date is invalid.", 400);
+        const existingEndDate = parseDate(leaveRequest.end_date, "Existing leave end date is invalid.", 400);
+
+        return startDate <= existingEndDate && endDate >= existingStartDate;
+    }) || null;
 }
 
 

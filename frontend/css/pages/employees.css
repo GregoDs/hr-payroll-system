@@ -5,7 +5,18 @@
   border-bottom: 1px solid var(--border);
 }
 .org-manager:last-child { border-bottom: 0; }
-.org-manager > strong { font-size: .7rem; }
+.org-manager > strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .7rem;
+}
+.org-manager .icon,
+.direct-report .icon {
+  width: 14px;
+  height: 14px;
+  color: var(--success);
+}
 .org-manager > span { display: block; margin-top: 4px; color: var(--muted); font-size: .56rem; }
 .direct-reports {
   display: grid;
@@ -14,5 +25,12 @@
   padding-left: 12px;
   border-left: 1px solid var(--border-strong);
 }
-.direct-report { padding: 9px 12px; background: var(--surface-2); font-size: .59rem; }
+.direct-report {
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface-2);
+  font-size: .59rem;
+}
 .direct-report span { color: var(--muted); }

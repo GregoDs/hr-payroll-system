@@ -7,5 +7,11 @@
   background: var(--border);
 }
 .rule-item { padding: 13px 15px; background: var(--surface-3); }
+.rule-item .icon {
+  width: 16px;
+  height: 16px;
+  margin-bottom: 9px;
+  color: var(--success);
+}
 .rule-item strong { display: block; font-size: .56rem; }
 .rule-item span { display: block; margin-top: 4px; color: var(--muted); font-size: .53rem; }

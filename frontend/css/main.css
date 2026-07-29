@@ -25,13 +25,15 @@
 
 @media (min-width: 650px) {
   .page-header { grid-template-columns: 1fr auto; }
-  .approval-row { grid-template-columns: minmax(150px, 1fr) 2.2fr; }
+  .approval-row { grid-template-columns: auto minmax(150px, 1fr) 2.2fr; }
   .approval-person { grid-row: span 2; }
+  .approval-actions { grid-column: 3; }
   .approval-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .toolbar { grid-template-columns: 2fr 1fr 1fr; }
   .form-grid { grid-template-columns: repeat(2, 1fr); }
   .field--full { grid-column: 1 / -1; }
   .report-grid { grid-template-columns: repeat(2, 1fr); }
+  .profile-grid { grid-template-columns: repeat(2, 1fr); }
   .modal { inset: 50% auto auto 50%; width: min(640px, calc(100vw - 40px)); max-height: min(760px, calc(100vh - 40px)); transform: translate(-50%, -50%); animation: modal-in .22s ease-out; }
   @keyframes modal-in { from { opacity: 0; transform: translate(-50%, -48%) scale(.985); } }
 }
@@ -91,8 +93,9 @@
 }
 
 @media (min-width: 1180px) {
-  .approval-row { grid-template-columns: minmax(170px, .9fr) 2.3fr auto; align-items: center; }
+  .approval-row { grid-template-columns: auto minmax(170px, .9fr) 2.3fr auto; align-items: center; }
   .approval-person { grid-row: auto; }
+  .approval-actions { grid-column: auto; }
   .approval-actions { justify-content: flex-end; }
   .payroll-summary { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 }

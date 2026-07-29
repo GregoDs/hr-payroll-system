@@ -11,7 +11,9 @@
     </div>
 
     <div class="live-state">
-      <span class="status-dot status-dot--pulse"></span>
+      <svg class="icon status-icon status-icon--pulse" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 8v4l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+      </svg>
       <span>Updated now</span>
     </div>
   </header>
@@ -21,7 +23,12 @@
   <section class="section-block" aria-labelledby="approval-title">
     <div class="section-heading">
       <div>
-        <p class="eyebrow">Decision queue</p>
+        <p class="eyebrow">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          Decision queue
+        </p>
         <h2 id="approval-title">Pending leave approvals</h2>
       </div>
 
@@ -42,7 +49,12 @@
     <section class="section-block" aria-labelledby="out-title">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Team calendar</p>
+          <p class="eyebrow">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>
+            </svg>
+            Team calendar
+          </p>
           <h2 id="out-title">Who is out</h2>
         </div>
 
@@ -58,11 +70,19 @@
     <section class="section-block" aria-labelledby="balance-title">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">2026 allowance</p>
+          <p class="eyebrow">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 5 6v5c0 5 3.5 8 7 10 3.5-2 7-5 7-10V6zM9 12l2 2 4-5"/>
+            </svg>
+            2026 allowance
+          </p>
           <h2 id="balance-title">Leave balances</h2>
         </div>
 
         <button class="text-button" type="button" data-go-view="leave">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14m-6-6 6 6-6 6"/>
+          </svg>
           View all →
         </button>
       </div>
@@ -74,11 +94,19 @@
   <section class="section-block" aria-labelledby="payroll-preview-title">
     <div class="section-heading">
       <div>
-        <p class="eyebrow">July 2026</p>
+        <p class="eyebrow">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 7h18v10H3zM7 11h.01M17 13h.01M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+          </svg>
+          July 2026
+        </p>
         <h2 id="payroll-preview-title">Payroll position</h2>
       </div>
 
       <button class="button button--primary" type="button" data-go-view="payroll">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14m-6-6 6 6-6 6"/>
+        </svg>
         Open payroll
       </button>
     </div>

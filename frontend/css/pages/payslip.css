@@ -2,8 +2,30 @@
 .payslip-head h3 { margin: 0 0 5px; font-size: 1.4rem; letter-spacing: -.04em; }
 .payslip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin-top: 18px; background: var(--border); }
 .payslip-line { padding: 14px; background: var(--surface-2); }
-.payslip-line span { display: block; color: var(--muted); font-size: .51rem; text-transform: uppercase; letter-spacing: .08em; }
+.payslip-line span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: .51rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.payslip-line .icon,
+.payslip-head .icon,
+.payslip-net .icon {
+  width: 12px;
+  height: 12px;
+}
 .payslip-line strong { display: block; margin-top: 7px; font-size: .72rem; }
 .payslip-net { margin-top: 18px; padding: 18px; color: #111; background: var(--acid); }
-.payslip-net span { font-size: .52rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
+.payslip-net span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .52rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
 .payslip-net strong { display: block; margin-top: 7px; font-size: 1.7rem; letter-spacing: -.04em; }

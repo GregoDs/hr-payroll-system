@@ -10,11 +10,19 @@
 .compact-field { display: grid; gap: 7px; }
 .field > span,
 .compact-field > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: var(--muted);
   font-size: .51rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: .1em;
+}
+.field .icon,
+.compact-field .icon {
+  width: 12px;
+  height: 12px;
 }
 input,
 select,

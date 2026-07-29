@@ -2,7 +2,7 @@
 
 Software Engineering Practical Test submission for Vunoh Global Services.
 
-The repository contains an Express/SQLite backend and a framework-free frontend built with semantic HTML, plain CSS and vanilla JavaScript. The frontend currently runs against an isolated in-memory dummy-data adapter so it can be reviewed before backend integration.
+The repository contains an Express/SQLite backend and a framework-free frontend built with semantic HTML, plain CSS and vanilla JavaScript. The frontend is connected to the Express API and persists operational changes in SQLite.
 
 ## What was prioritized
 
@@ -15,7 +15,7 @@ The current frontend prioritizes the operational paths that carry the most risk:
 - Keyboard navigation, focus-managed dialogs, reduced-motion support and responsive layouts
 - A low-glare warm light theme by default, with a restrained dark theme remembered per browser
 
-Mock changes intentionally last only for the current page session. Refreshing restores the fixture in `frontend/data/dummy-data.js`.
+The legacy mock adapter and fixtures remain available for unit tests, but the running application uses `frontend/js/data/live-store.js`.
 
 ## Frontend structure
 
@@ -27,9 +27,17 @@ The frontend is still a vanilla JavaScript single-page app, but the files are no
 - `frontend/js/pages/*.js` is the page registry that tells the app which HTML partials to load.
 - `frontend/js/app.js` owns shared state, rendering, forms and interactions while the backend is still deferred.
 
-## Run the frontend
+## Run the application
 
-No dependency installation or build step is required. From the repository root, start any static file server. This is required because the app loads page partials from `frontend/pages/*.html`.
+In one terminal:
+
+```bash
+cd backend
+npm install
+npm start
+```
+
+In another terminal, from the repository root:
 
 ```bash
 python3 -m http.server 5500 --directory frontend
@@ -54,17 +62,9 @@ npm test
 
 The tests use Node's built-in test runner and require no downloaded packages.
 
-## Backend
-
-The existing backend is not required for the current mock-first frontend. To run it separately:
-
-```bash
-cd backend
-npm install
-node src/server.js
-```
-
-Its API base is `http://localhost:3000/api`, with employee, leave and payroll routes. Connecting the frontend adapter to those routes is intentionally deferred.
+The API base defaults to `http://localhost:3000/api`. To use another frontend origin, set
+`FRONTEND_ORIGIN`; to override the demo login password, set `DEMO_PASSWORD`. The current
+database schema does not store password hashes, so the demo password is not production authentication.
 
 ## Leave safeguards and thresholds
 
@@ -108,8 +108,7 @@ Automated cases cover zero tax, exact tax-bracket boundaries, the social-securit
 
 ## Known limitations
 
-- Data is in-memory and resets on refresh.
-- Authentication and role permissions are represented visually but not enforced.
+- Authentication uses a shared demo password and role permissions are represented visually but not enforced server-side.
 - Calendar-day leave calculations do not yet exclude weekends or public holidays.
 - Leave allowances are currently a single annual default rather than per-type accrual records.
 - Team coverage uses a fixed threshold instead of configurable team staffing requirements.

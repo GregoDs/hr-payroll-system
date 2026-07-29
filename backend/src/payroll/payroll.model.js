@@ -61,6 +61,7 @@ function getPayrollById(payrollId) {
             e.email,
             e.role_title,
             e.employment_type,
+            e.start_date,
             t.name AS team_name,
             p.pay_period,
             p.basic_salary,
@@ -171,6 +172,71 @@ function updatePayrollStatus(payrollId, payroll) {
 }
 
 
+function updateEmployeeSalary(employeeId, salary) {
+
+    const query = `
+        UPDATE employees
+        SET
+            salary = ?,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+    `;
+
+    return new Promise((resolve, reject) => {
+        db.run(query, [salary, employeeId], function (err) {
+            if (err) {
+                return reject(err);
+            }
+
+            resolve({
+                changes: this.changes
+            });
+        });
+    });
+}
+
+
+function updatePayrollCalculation(payrollId, payroll) {
+
+    const query = `
+        UPDATE payroll
+        SET
+            basic_salary = ?,
+            unpaid_leave_deduction = ?,
+            gross_pay = ?,
+            tax_deduction = ?,
+            social_security_deduction = ?,
+            other_deductions = ?,
+            net_pay = ?,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+    `;
+
+    const values = [
+        payroll.basic_salary,
+        payroll.unpaid_leave_deduction,
+        payroll.gross_pay,
+        payroll.tax_deduction,
+        payroll.social_security_deduction,
+        payroll.other_deductions,
+        payroll.net_pay,
+        payrollId
+    ];
+
+    return new Promise((resolve, reject) => {
+        db.run(query, values, function (err) {
+            if (err) {
+                return reject(err);
+            }
+
+            resolve({
+                changes: this.changes
+            });
+        });
+    });
+}
+
+
 function getActiveEmployeesForPayPeriod(periodEndDate) {
 
     const query = `
@@ -212,6 +278,57 @@ function getExistingPayrollByPeriod(payPeriod) {
             pay_period
         FROM payroll
         WHERE pay_period = ?
+    `;
+
+    return new Promise((resolve, reject) => {
+        db.all(query, [payPeriod], (err, rows) => {
+            if (err) {
+                return reject(err);
+            }
+
+            resolve(rows);
+        });
+    });
+}
+
+
+function getPayrollByPeriod(payPeriod) {
+
+    const query = `
+        SELECT
+            p.id,
+            p.employee_id,
+            e.employee_code,
+            e.first_name,
+            e.last_name,
+            e.first_name || ' ' || e.last_name AS employee_name,
+            e.email,
+            e.role_title,
+            e.employment_type,
+            e.salary,
+            e.start_date,
+            t.name AS team_name,
+            p.pay_period,
+            p.basic_salary,
+            p.unpaid_leave_days,
+            p.unpaid_leave_deduction,
+            p.gross_pay,
+            p.tax_deduction,
+            p.social_security_deduction,
+            p.other_deductions,
+            p.net_pay,
+            p.status,
+            p.generated_by,
+            p.generated_at,
+            p.created_at,
+            p.updated_at
+        FROM payroll p
+        INNER JOIN employees e
+            ON p.employee_id = e.id
+        LEFT JOIN teams t
+            ON e.team_id = t.id
+        WHERE p.pay_period = ?
+        ORDER BY p.created_at DESC
     `;
 
     return new Promise((resolve, reject) => {
@@ -347,8 +464,11 @@ module.exports = {
     getPayrollById,
     getPayrollByEmployeeId,
     updatePayrollStatus,
+    updateEmployeeSalary,
+    updatePayrollCalculation,
     getActiveEmployeesForPayPeriod,
     getExistingPayrollByPeriod,
+    getPayrollByPeriod,
     getApprovedUnpaidLeavesForPeriod,
     createPayrollRecord,
     beginTransaction,

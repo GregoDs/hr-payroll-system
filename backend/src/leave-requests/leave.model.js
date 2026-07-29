@@ -9,6 +9,7 @@ function getAllLeaveRequests() {
             e.employee_code,
             e.first_name || ' ' || e.last_name AS employee_name,
             e.role_title,
+            e.team_id,
             t.name AS team_name,
             lr.leave_type,
             lr.start_date,
@@ -54,6 +55,7 @@ function getLeaveRequestById(leaveId) {
             e.employee_code,
             e.first_name || ' ' || e.last_name AS employee_name,
             e.role_title,
+            e.team_id,
             t.name AS team_name,
             lr.leave_type,
             lr.start_date,
@@ -98,6 +100,9 @@ function getLeaveRequestsByEmployeeId(employeeId) {
             lr.employee_id,
             e.employee_code,
             e.first_name || ' ' || e.last_name AS employee_name,
+            e.role_title,
+            e.team_id,
+            t.name AS team_name,
             lr.leave_type,
             lr.start_date,
             lr.end_date,
@@ -114,6 +119,8 @@ function getLeaveRequestsByEmployeeId(employeeId) {
         FROM leave_requests lr
         INNER JOIN employees e
             ON lr.employee_id = e.id
+        LEFT JOIN teams t
+            ON e.team_id = t.id
         LEFT JOIN employees a
             ON lr.approved_by = a.id
         WHERE lr.employee_id = ?

@@ -126,6 +126,48 @@ async function finalizePayroll(req, res, next) {
 }
 
 
+async function updateDraftBasicSalary(req, res, next) {
+    try {
+        const payrollId = Number(req.params.payrollId);
+
+        if (Number.isNaN(payrollId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid payroll ID.",
+            });
+        }
+
+        const payrollRecord = await payrollService.updateDraftBasicSalary(
+            payrollId,
+            req.body.basic_salary
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Draft payroll salary updated successfully.",
+            data: payrollRecord,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+async function refreshDraftPayroll(req, res, next) {
+    try {
+        const payrollRecords = await payrollService.refreshDraftPayroll(req.body.pay_period);
+
+        return res.status(200).json({
+            success: true,
+            message: "Draft payroll refreshed successfully.",
+            data: payrollRecords,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
 module.exports = {
     generatePayroll,
     getAllPayrollRecords,
@@ -133,4 +175,6 @@ module.exports = {
     getPayrollById,
     getPayslipDetails,
     finalizePayroll,
+    updateDraftBasicSalary,
+    refreshDraftPayroll,
 };

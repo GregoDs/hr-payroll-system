@@ -1,7 +1,12 @@
 <section class="view" id="employees" data-view="employees" aria-labelledby="employees-title" hidden>
   <header class="page-header page-header--compact">
     <div>
-      <p class="eyebrow accent-text">Employee directory</p>
+      <p class="eyebrow accent-text">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Employee directory
+      </p>
       <h1 id="employees-title">People records</h1>
       <p class="page-intro">
         Maintain employment details and reporting relationships without deleting history.
@@ -9,18 +14,31 @@
     </div>
 
     <button class="button button--primary" id="add-employee" type="button">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
       Add employee
     </button>
   </header>
 
   <div class="toolbar" aria-label="Employee filters">
     <label class="field field--search">
-      <span>Search people</span>
+      <span>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M11 19a8 8 0 1 1 5.66-2.34L21 21"/>
+        </svg>
+        Search people
+      </span>
       <input id="employee-search" type="search" placeholder="Name, role, team or manager">
     </label>
 
     <label class="field">
-      <span>Employment type</span>
+      <span>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1m-9 0h14v13H5zM9 12h6"/>
+        </svg>
+        Employment type
+      </span>
       <select id="employment-filter">
         <option value="all">All types</option>
         <option>Permanent</option>
@@ -30,7 +48,12 @@
     </label>
 
     <label class="field">
-      <span>Status</span>
+      <span>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3 5 6v5c0 5 3.5 8 7 10 3.5-2 7-5 7-10V6zM9 12l2 2 4-5"/>
+        </svg>
+        Status
+      </span>
       <select id="status-filter">
         <option value="active">Active</option>
         <option value="inactive">Inactive</option>
@@ -45,6 +68,7 @@
     <table>
       <thead>
         <tr>
+          <th>No.</th>
           <th>Employee</th>
           <th>Role &amp; team</th>
           <th>Manager</th>
@@ -65,7 +89,12 @@
   <section class="section-block org-section" aria-labelledby="org-title">
     <div class="section-heading">
       <div>
-        <p class="eyebrow">Reporting structure</p>
+        <p class="eyebrow">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 4v5M6 20v-4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4M6 9h12M6 9v3M18 9v3M10 4h4v4h-4z"/>
+          </svg>
+          Reporting structure
+        </p>
         <h2 id="org-title">Organization view</h2>
       </div>
     </div>

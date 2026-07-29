@@ -176,6 +176,120 @@ async function finalizePayroll(payrollId, managerId) {
 }
 
 
+async function updateDraftBasicSalary(payrollId, basicSalary) {
+
+    const salary = Number(basicSalary);
+
+    if (!Number.isFinite(salary) || salary <= 0) {
+        throw createError("Basic salary must be a positive amount.", 400);
+    }
+
+    const payroll = await getPayrollById(payrollId);
+
+    if (payroll.status !== "Draft") {
+        throw createError("Only draft payroll records can be edited.", 409);
+    }
+
+    const periodDates = getPayPeriodDates(payroll.pay_period);
+    const recalculated = calculatePayrollForEmployee(
+        {
+            id: payroll.employee_id,
+            salary,
+            start_date: payroll.start_date
+        },
+        payroll.pay_period,
+        payroll.unpaid_leave_days,
+        payroll.generated_by || DEFAULT_GENERATED_BY,
+        periodDates
+    );
+    recalculated.other_deductions = Number(payroll.other_deductions || 0);
+    recalculated.net_pay = roundMoney(
+        recalculated.gross_pay -
+        recalculated.tax_deduction -
+        recalculated.social_security_deduction -
+        recalculated.other_deductions
+    );
+
+    await payrollModel.beginTransaction();
+
+    try {
+        await payrollModel.updateEmployeeSalary(payroll.employee_id, roundMoney(salary));
+        await payrollModel.updatePayrollCalculation(payrollId, recalculated);
+        await payrollModel.commitTransaction();
+    } catch (error) {
+        await payrollModel.rollbackTransaction();
+        throw error;
+    }
+
+    return await payrollModel.getPayrollById(payrollId);
+}
+
+
+async function refreshDraftPayroll(payPeriod) {
+
+    if (!payPeriod) {
+        throw createError("pay_period is required.", 400);
+    }
+
+    const periodDates = getPayPeriodDates(payPeriod);
+    const payrollRecords = await payrollModel.getPayrollByPeriod(payPeriod);
+
+    if (payrollRecords.length === 0) {
+        throw createError("No payroll has been generated for this pay period.", 404);
+    }
+
+    const finalizedRecord = payrollRecords.find((payroll) => payroll.status !== "Draft");
+    if (finalizedRecord) {
+        throw createError("Only draft payroll can be refreshed. This pay period has already been finalized.", 409);
+    }
+
+    const approvedUnpaidLeaves = await payrollModel.getApprovedUnpaidLeavesForPeriod(
+        periodDates.startDateString,
+        periodDates.endDateString
+    );
+
+    await payrollModel.beginTransaction();
+
+    try {
+        for (const payroll of payrollRecords) {
+            const employeeUnpaidLeaveDays = calculateEmployeeUnpaidLeaveDays(
+                payroll.employee_id,
+                approvedUnpaidLeaves,
+                periodDates.startDate,
+                periodDates.endDate
+            );
+            const recalculated = calculatePayrollForEmployee(
+                {
+                    id: payroll.employee_id,
+                    salary: payroll.salary,
+                    start_date: payroll.start_date
+                },
+                payPeriod,
+                employeeUnpaidLeaveDays,
+                payroll.generated_by || DEFAULT_GENERATED_BY,
+                periodDates
+            );
+            recalculated.other_deductions = Number(payroll.other_deductions || 0);
+            recalculated.net_pay = roundMoney(
+                recalculated.gross_pay -
+                recalculated.tax_deduction -
+                recalculated.social_security_deduction -
+                recalculated.other_deductions
+            );
+
+            await payrollModel.updatePayrollCalculation(payroll.id, recalculated);
+        }
+
+        await payrollModel.commitTransaction();
+    } catch (error) {
+        await payrollModel.rollbackTransaction();
+        throw error;
+    }
+
+    return await payrollModel.getPayrollByPeriod(payPeriod);
+}
+
+
 
 
 ///Calculate an employees payroll
@@ -332,6 +446,8 @@ module.exports = {
     getPayrollByEmployeeId,
     getPayslipDetails,
     finalizePayroll,
+    updateDraftBasicSalary,
+    refreshDraftPayroll,
     calculatePayrollForEmployee,
     calculateTax,
     calculateSocialSecurity,

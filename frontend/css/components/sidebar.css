@@ -36,6 +36,7 @@
 .primary-nav.is-open { display: block; }
 .primary-nav a {
   display: flex;
+  align-items: center;
   gap: 14px;
   padding: 13px 0;
   border-bottom: 1px solid var(--border);
@@ -43,6 +44,10 @@
   font-size: .68rem;
   font-weight: 700;
   letter-spacing: .02em;
+}
+.primary-nav .icon {
+  width: 15px;
+  height: 15px;
 }
 .primary-nav a span {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
